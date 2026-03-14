@@ -159,3 +159,50 @@ def dashboard(request):
 
     nombre = request.session.get('usuario_nombre', 'Usuario')
     return render(request, 'dashboard.html', {'nombre': nombre})
+
+# ── REGISTRO ───────────────────────────────────────────────────────────────────
+def registro(request):
+
+    if request.method == "POST":
+
+        nombre = request.POST.get('nombre', '').strip()
+        correo = request.POST.get('correo', '').strip()
+        telefono = request.POST.get('telefono', '').strip()
+        password = request.POST.get('password', '')
+        confirmar_password = request.POST.get('confirmar_password', '')
+        id_rol = request.POST.get('id_rol')
+
+        # Validaciones
+        if not nombre or not correo or not password or not id_rol:
+            return render(request, 'registro.html', {
+                'error': 'Todos los campos obligatorios deben completarse.'
+            })
+
+        if password != confirmar_password:
+            return render(request, 'registro.html', {
+                'error': 'Las contraseñas no coinciden.'
+            })
+
+        if len(password) < 6:
+            return render(request, 'registro.html', {
+                'error': 'La contraseña debe tener al menos 6 caracteres.'
+            })
+
+        if Usuario.objects.filter(correo=correo).exists():
+            return render(request, 'registro.html', {
+                'error': 'Ya existe una cuenta con ese correo.'
+            })
+
+        # Crear usuario
+        Usuario.objects.create(
+            nombre=nombre,
+            correo=correo,
+            telefono=telefono,
+            password=password,
+            id_rol=id_rol
+        )
+
+        messages.success(request, 'Cuenta creada correctamente. Ya puedes iniciar sesión.')
+        return redirect('login')
+
+    return render(request, 'registro.html')
