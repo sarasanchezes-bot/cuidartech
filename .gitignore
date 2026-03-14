@@ -1,0 +1,9 @@
+# Created by venv; see https://docs.python.org...
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+db.sqlite3
+*.log
+.DS_Store
