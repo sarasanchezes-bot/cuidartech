@@ -30,7 +30,7 @@ class RecuperacionPassword(models.Model):
     )
 
     codigo_recuperacion = models.CharField(max_length=255)
-    fecha_registro = models.DateTimeField(auto_now_add=True)
+    fecha_expiracion = models.DateTimeField()
     utilizado = models.BooleanField(default=False)
 
     class Meta:
