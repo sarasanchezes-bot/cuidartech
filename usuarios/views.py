@@ -158,7 +158,7 @@ def dashboard(request):
         return redirect('login')
 
     nombre = request.session.get('usuario_nombre', 'Usuario')
-    return render(request, 'dashboard.html', {'nombre': nombre})
+    return render(request, 'dashboard_cuidador.html', {'nombre': nombre})
 
 # ── REGISTRO ───────────────────────────────────────────────────────────────────
 def registro(request):
