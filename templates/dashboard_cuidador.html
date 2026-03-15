@@ -1,16 +1,152 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Cuidador</title>
+<title>Dashboard del Cuidador</title>
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
 </head>
 
 <body>
 
-<h1>Dashboard del Cuidador</h1>
-<p>Bienvenido al panel del cuidador en CuidarTech.</p>
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <h2>Cuidar-Tech</h2>
+
+        <ul>
+            <li class="active">Dashboard</li>
+            <li>Gestión de Pacientes</li>
+            <li>Planes de Cuidado</li>
+            <li>Registro Diario</li>
+            <li>Recordatorios</li>
+            <li>Mi Perfil</li>
+        </ul>
+
+        <div class="logout">
+            Cerrar sesión
+        </div>
+
+    </aside>
+
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main">
+
+        <h1>Dashboard del Cuidador</h1>
+        <p class="fecha">Domingo, 15 de Marzo de 2026</p>
+
+
+        <!-- TARJETAS SUPERIORES -->
+        <div class="cards">
+
+            <div class="card">
+                <h3>Pacientes Activos</h3>
+                <span class="number">3</span>
+            </div>
+
+            <div class="card">
+                <h3>Tareas Pendientes</h3>
+                <span class="number">4</span>
+            </div>
+
+            <div class="card">
+                <h3>Tareas Completadas</h3>
+                <span class="number">8</span>
+            </div>
+
+            <div class="card">
+                <h3>Alertas</h3>
+                <span class="number">2</span>
+            </div>
+
+        </div>
+
+
+        <!-- CONTENIDO INFERIOR -->
+        <div class="content-panels">
+
+            <!-- ACTIVIDADES -->
+            <div class="panel">
+
+                <h2>Actividades Pendientes</h2>
+
+                <div class="actividad">
+                    <div>
+                        <p><strong>Administrar medicamento matutino</strong></p>
+                        <small>María González</small>
+                    </div>
+                    <span>09:00 AM</span>
+                </div>
+
+                <div class="actividad">
+                    <div>
+                        <p><strong>Ejercicios de movilidad</strong></p>
+                        <small>Juan Pérez</small>
+                    </div>
+                    <span>10:30 AM</span>
+                </div>
+
+                <div class="actividad">
+                    <div>
+                        <p><strong>Control de signos vitales</strong></p>
+                        <small>María González</small>
+                    </div>
+                    <span>12:00 PM</span>
+                </div>
+
+                <div class="actividad">
+                    <div>
+                        <p><strong>Almuerzo y nutrición</strong></p>
+                        <small>Ana Martínez</small>
+                    </div>
+                    <span>01:00 PM</span>
+                </div>
+
+            </div>
+
+
+            <!-- MEDICAMENTOS -->
+            <div class="panel">
+
+                <h2>Medicamentos Programados</h2>
+
+                <div class="med">
+                    <div>
+                        <p><strong>Aspirina 100mg</strong></p>
+                        <small>María González</small>
+                    </div>
+                    <span>09:00 AM</span>
+                </div>
+
+                <div class="med">
+                    <div>
+                        <p><strong>Metformina 850mg</strong></p>
+                        <small>Juan Pérez</small>
+                    </div>
+                    <span>08:00 AM</span>
+                </div>
+
+                <div class="med">
+                    <div>
+                        <p><strong>Enalapril 10mg</strong></p>
+                        <small>María González</small>
+                    </div>
+                    <span>02:00 PM</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+</div>
 
 </body>
-
 </html>
