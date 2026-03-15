@@ -19,6 +19,7 @@ def login_view(request):
             usuario = Usuario.objects.get(correo=correo, password=password)
             request.session['usuario_id'] = usuario.id_usuario
             request.session['usuario_nombre'] = usuario.nombre
+            request.session['usuario_rol'] = usuario.id_rol  
             return redirect('dashboard')
 
         except Usuario.DoesNotExist:
@@ -158,7 +159,14 @@ def dashboard(request):
         return redirect('login')
 
     nombre = request.session.get('usuario_nombre', 'Usuario')
-    return render(request, 'dashboard_cuidador.html', {'nombre': nombre})
+    id_rol = request.session.get('usuario_rol')
+
+    if id_rol == 1:
+        return render(request, 'dashboard_cuidador.html', {'nombre': nombre})
+    elif id_rol == 2:
+        return render(request, 'dashboard_familiar.html', {'nombre': nombre})
+    else:
+        return render(request, 'dashboard_cuidador.html', {'nombre': nombre})
 
 # ── REGISTRO ───────────────────────────────────────────────────────────────────
 def registro(request):
