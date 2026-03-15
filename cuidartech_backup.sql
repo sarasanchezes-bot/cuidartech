@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict T2JBoJrMQabydZHz9RKyDNh3lGnYgTPkL9gdDdCRAuq3UBSIFnyAfh90svGUvgM
+\restrict ARGbphAXlXEc7CymdACwLXnVznSX6SNq9IK8fcTn2AvfDoyJuMNrJw2b3nLSeHq
 
 -- Dumped from database version 18.3 (Postgres.app)
 -- Dumped by pg_dump version 18.2
 
--- Started on 2026-03-14 15:03:57 -05
+-- Started on 2026-03-15 13:22:40 -05
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -951,7 +951,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
-4engghd973b2g1f9ckt8slpx8nidlz6o	.eJyrViotLk0sysxXslIKTixKVAiOKTUwSDXMS85IrVIISi0uKUotyFfSgSmLz0xRsjI0QPDz8nOTilKBun0TK3NS8xSCEzG0FqUmlxakFiUmZ-bnxcOts6wFAJjELDc:1w1EOx:7-oHSPZ31QMgmpHM5nOVC9OKkFnjiSazPwkxAAGk8Y0	2026-03-27 21:06:51.956467-05
+4engghd973b2g1f9ckt8slpx8nidlz6o	.eJyrViotLk0sysxXslIKTixKVAiOKTUwSDXMS85IrVIISi0uKUotyFfSgSmLz0xRsjJEcPPyc5OKUonVXJSfA9RdCwBd9SjT:1w1q2G:KjaKM3wXYpqCjQQw9O9s_7Ug8BNoyEGb3JJ1NaQ5DcE	2026-03-29 13:17:56.052069-05
 \.
 
 
@@ -1002,39 +1002,8 @@ COPY public.planes_cuidado (id_plan, id_paciente, descripcion, fecha_creacion, e
 --
 
 COPY public."recuperacion_contraseña" (id_recuperacion, id_usuario, codigo_recuperacion, fecha_expiracion, utilizado) FROM stdin;
-1	5	918389	2026-03-11 13:09:13.171218-05	f
-2	5	884205	2026-03-11 17:42:38.520773-05	f
-3	6	281774	2026-03-11 17:47:16.229825-05	f
-4	6	210819	2026-03-11 17:47:32.594062-05	f
-5	6	591927	2026-03-11 17:48:14.588331-05	f
-6	6	511442	2026-03-11 18:06:28.015884-05	f
-7	6	765575	2026-03-11 18:13:26.414413-05	f
-8	6	843618	2026-03-11 18:15:07.695948-05	f
-9	5	781969	2026-03-11 18:16:35.377789-05	f
-10	5	726858	2026-03-11 18:25:21.566709-05	f
-11	5	795813	2026-03-11 18:27:13.191526-05	f
-12	5	184753	2026-03-11 18:27:15.478226-05	f
-13	5	746906	2026-03-11 18:31:02.610245-05	f
-14	5	992824	2026-03-11 18:31:46.136471-05	f
-15	6	955766	2026-03-11 18:34:15.175738-05	f
-16	6	737338	2026-03-11 18:35:35.148394-05	f
-17	5	168456	2026-03-11 18:36:33.989965-05	f
-18	5	741822	2026-03-11 18:52:08.303693-05	f
-19	5	564449	2026-03-12 06:52:54.058325-05	f
-20	5	639476	2026-03-12 07:22:41.706696-05	f
-21	5	817714	2026-03-12 07:23:09.031094-05	f
-22	5	765893	2026-03-12 07:25:15.744032-05	f
-23	5	570070	2026-03-13 23:49:34.77817-05	f
-24	5	564871	2026-03-13 23:51:54.370004-05	f
-25	5	698816	2026-03-13 23:55:38.144083-05	f
-26	9	570439	2026-03-14 00:02:07.838543-05	f
-27	9	171475	2026-03-14 00:06:07.391415-05	f
-28	9	938939	2026-03-14 00:48:58.375182-05	f
-29	9	294732	2026-03-13 19:55:36.391146-05	t
-30	9	916930	2026-03-13 19:59:59.478709-05	t
-31	9	794295	2026-03-13 20:28:16.74335-05	t
-32	9	712873	2026-03-13 21:11:16.088048-05	t
-33	9	127669	2026-03-13 21:16:49.758056-05	f
+1	2	258024	2026-03-14 21:28:25.960999-05	t
+2	2	778486	2026-03-14 21:35:14.434173-05	t
 \.
 
 
@@ -1067,12 +1036,9 @@ COPY public.roles (id_rol, nombre_rol) FROM stdin;
 --
 
 COPY public.usuarios (id_usuario, nombre, correo, password, telefono, direccion, id_rol, fecha_registro) FROM stdin;
-2	Sara Sanchez	sara@cuidartech.com	1234	3001112233	Medellin	1	2026-03-11 12:16:38.166441
-6	Sara Sánchez Restrepo	sara.sanchez.5450@gmail.com	123	3000000	Medellín	1	2026-03-11 17:36:48.169414
-7	Carolina Londoño Castaño	carolina.londonoca@amigo.edu.co	1234	3000000	Medellín	1	2026-03-11 18:28:58.573426
-5	Sara Sánchez Restrepo	sara.sanchezes@amigo.edu.co	123	3000000	Medellín	1	2026-03-11 12:46:19.293915
-10	Maylen Sanchez Restrepo	maylen.sanchezre@amigo.edu.co	123456	3117300000	\N	2	2026-03-14 01:52:05.165856
-9	Juan Sanchez	juanmanuel.sanchez.0530@gmail.com	123456	3000000	Medellín	1	2026-03-14 09:51:49.788576
+1	Sara Sánchez Restrepo	sara.sanchez.5450@gmail.com	121212	321340000	\N	1	2026-03-15 02:15:52.188618
+2	Maylen Sanchez Restrepo	maylen.sanchezre@amigo.edu.co	123456	12121212	\N	2	2026-03-15 12:17:08.017629
+3	Ana Rios	ana.rios@gmail.com	123456	122222222	\N	1	2026-03-15 18:13:02.192216
 \.
 
 
@@ -1218,7 +1184,7 @@ SELECT pg_catalog.setval('public.planes_cuidado_id_plan_seq', 1, false);
 -- Name: recuperacion_contraseña_id_recuperacion_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."recuperacion_contraseña_id_recuperacion_seq"', 33, true);
+SELECT pg_catalog.setval('public."recuperacion_contraseña_id_recuperacion_seq"', 2, true);
 
 
 --
@@ -1245,7 +1211,7 @@ SELECT pg_catalog.setval('public.roles_id_rol_seq', 3, true);
 -- Name: usuarios_id_usuario_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.usuarios_id_usuario_seq', 10, true);
+SELECT pg_catalog.setval('public.usuarios_id_usuario_seq', 3, true);
 
 
 --
@@ -1801,11 +1767,11 @@ ALTER TABLE ONLY public.usuarios
     ADD CONSTRAINT fk_usuario_rol FOREIGN KEY (id_rol) REFERENCES public.roles(id_rol);
 
 
--- Completed on 2026-03-14 15:03:57 -05
+-- Completed on 2026-03-15 13:22:40 -05
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict T2JBoJrMQabydZHz9RKyDNh3lGnYgTPkL9gdDdCRAuq3UBSIFnyAfh90svGUvgM
+\unrestrict ARGbphAXlXEc7CymdACwLXnVznSX6SNq9IK8fcTn2AvfDoyJuMNrJw2b3nLSeHq
 
