@@ -1,14 +1,118 @@
-<h2>Verificar código</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Verificar código</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:linear-gradient(90deg,#f6e9ee,#f2d9e2);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.card{
+background:white;
+padding:40px;
+border-radius:20px;
+width:350px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.logo{
+width:70px;
+height:70px;
+margin:auto;
+border-radius:20px;
+background:linear-gradient(135deg,#7ab6e8,#f39ab0);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+color:white;
+}
+
+h1{
+margin-top:15px;
+margin-bottom:5px;
+}
+
+.subtitle{
+color:#777;
+font-size:14px;
+margin-bottom:25px;
+}
+
+input{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid #d8e3ef;
+margin-bottom:20px;
+font-size:14px;
+text-align:center;
+letter-spacing:2px;
+}
+
+input:focus{
+outline:none;
+border:1px solid #7ab6e8;
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#7ab6e8,#f39ab0);
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+.error{
+color:red;
+margin-top:10px;
+font-size:14px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="logo">🔑</div>
+
+<h1>Verificar código</h1>
+<p class="subtitle">Ingresa el código que recibiste en tu correo</p>
 
 <form method="POST">
-    {% csrf_token %}
+{% csrf_token %}
 
-    <input type="text" name="codigo" placeholder="Código de verificación">
+<input type="text" name="codigo" placeholder="Código de verificación" required>
 
-    <button type="submit">Verificar</button>
+<button type="submit">Verificar</button>
 
 </form>
 
 {% if error %}
-<p style="color:red">{{ error }}</p>
+<p class="error">{{ error }}</p>
 {% endif %}
+
+</div>
+
+</body>
+</html>
