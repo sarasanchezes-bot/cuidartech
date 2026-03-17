@@ -26,7 +26,9 @@ class RecuperacionPassword(models.Model):
     id_usuario = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE,
-        db_column='id_usuario'
+        db_column='id_usuario',
+        null=True,
+        blank=True
     )
 
     codigo_recuperacion = models.CharField(max_length=255)
