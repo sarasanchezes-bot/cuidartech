@@ -34,5 +34,6 @@ GitHub: Plataforma para la gestión del repositorio y trabajo colaborativo.
 📦 Librerías y Dependencias
 python-dotenv: Manejo de variables de entorno y protección de datos sensibles.
 psycopg2: Conexión entre Django y PostgreSQL.
+
 📧 Servicios Externos
 SMTP Gmail: Servicio utilizado para el envío de correos electrónicos (recuperación de contraseña).
