@@ -40,3 +40,23 @@ class RecuperacionPassword(models.Model):
 
     def __str__(self):
         return f"Recuperacion usuario {self.id_usuario_id}"
+
+class Paciente(models.Model):
+
+    id_paciente = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100)
+    fecha_nacimiento = models.DateField()
+    diagnostico = models.TextField(null=True, blank=True)
+    estado = models.BooleanField(default=True)
+
+    id_cuidador = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        db_column='id_cuidador'
+    )
+
+    class Meta:
+        db_table = 'pacientes'
+
+    def __str__(self):
+        return self.nombre

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Usuario, RecuperacionPassword
+from .models import Usuario, RecuperacionPassword, Paciente
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils import timezone
@@ -260,3 +260,115 @@ def registro(request):
         return redirect('login')
 
     return render(request, 'registro.html')
+
+# ── DECORADOR: solo cuidadores ─────────────────────────────────────────────────
+def solo_cuidador(view_func):
+    def wrapper(request, *args, **kwargs):
+        if 'usuario_id' not in request.session:
+            return redirect('login')
+        if request.session.get('usuario_rol') != 1:
+            return redirect('dashboard')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+# ── LISTA PACIENTES ────────────────────────────────────────────────────────────
+@solo_cuidador
+def lista_pacientes(request):
+    usuario_id = request.session.get('usuario_id')
+    pacientes = Paciente.objects.filter(id_cuidador_id=usuario_id)
+    return render(request, 'pacientes/lista_pacientes.html', {
+        'pacientes': pacientes
+    })
+
+
+# ── AGREGAR PACIENTE ───────────────────────────────────────────────────────────
+@solo_cuidador
+def agregar_paciente(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre', '').strip()
+        fecha_nacimiento = request.POST.get('fecha_nacimiento')
+        diagnostico = request.POST.get('diagnostico', '').strip()
+        usuario_id = request.session.get('usuario_id')
+
+        if not nombre or not fecha_nacimiento:
+            return render(request, 'pacientes/agregar_paciente.html', {
+                'error': 'Nombre y fecha de nacimiento son obligatorios.'
+            })
+
+        Paciente.objects.create(
+            nombre=nombre,
+            fecha_nacimiento=fecha_nacimiento,
+            diagnostico=diagnostico,
+            estado=True,
+            id_cuidador_id=usuario_id
+        )
+
+        messages.success(request, 'Paciente registrado correctamente.')
+        return redirect('lista_pacientes')
+
+    return render(request, 'pacientes/agregar_paciente.html')
+
+
+# ── DETALLE PACIENTE ───────────────────────────────────────────────────────────
+@solo_cuidador
+def detalle_paciente(request, id_paciente):
+    try:
+        paciente = Paciente.objects.get(
+            id_paciente=id_paciente,
+            id_cuidador_id=request.session.get('usuario_id')
+        )
+    except Paciente.DoesNotExist:
+        return redirect('lista_pacientes')
+
+    return render(request, 'pacientes/detalle_paciente.html', {
+        'paciente': paciente
+    })
+
+
+# ── EDITAR PACIENTE ────────────────────────────────────────────────────────────
+@solo_cuidador
+def editar_paciente(request, id_paciente):
+    try:
+        paciente = Paciente.objects.get(
+            id_paciente=id_paciente,
+            id_cuidador_id=request.session.get('usuario_id')
+        )
+    except Paciente.DoesNotExist:
+        return redirect('lista_pacientes')
+
+    if request.method == 'POST':
+        paciente.nombre = request.POST.get('nombre', '').strip()
+        paciente.fecha_nacimiento = request.POST.get('fecha_nacimiento')
+        paciente.diagnostico = request.POST.get('diagnostico', '').strip()
+
+        if not paciente.nombre or not paciente.fecha_nacimiento:
+            return render(request, 'pacientes/editar_paciente.html', {
+                'paciente': paciente,
+                'error': 'Nombre y fecha de nacimiento son obligatorios.'
+            })
+
+        paciente.save()
+        messages.success(request, 'Paciente actualizado correctamente.')
+        return redirect('lista_pacientes')
+
+    return render(request, 'pacientes/editar_paciente.html', {
+        'paciente': paciente
+    })
+
+
+# ── DESACTIVAR PACIENTE ────────────────────────────────────────────────────────
+@solo_cuidador
+def desactivar_paciente(request, id_paciente):
+    try:
+        paciente = Paciente.objects.get(
+            id_paciente=id_paciente,
+            id_cuidador_id=request.session.get('usuario_id')
+        )
+        paciente.estado = False
+        paciente.save()
+        messages.success(request, f'Paciente {paciente.nombre} desactivado.')
+    except Paciente.DoesNotExist:
+        pass
+
+    return redirect('lista_pacientes')
