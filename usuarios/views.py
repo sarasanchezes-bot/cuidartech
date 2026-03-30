@@ -48,13 +48,59 @@ def recuperar_password(request):
                 utilizado=False
             )
 
-            send_mail(
-                'Código de recuperación - CuidarTech',
-                f'Tu código de recuperación es: {codigo}\n\nEste código expira en 10 minutos.',
-                None,   # usa DEFAULT_FROM_EMAIL del settings
-                [correo],
-                fail_silently=False
+            texto_html = f'''
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f5f7fb;font-family:Arial,sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fb;padding:40px 0;">
+        <tr>
+            <td align="center">
+                <table width="500" cellpadding="0" cellspacing="0" style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#7ab6e8,#f39ab0);padding:35px;text-align:center;">
+                            <h1 style="color:white;margin:0;font-size:26px;">❤ CuidarTech</h1>
+                            <p style="color:rgba(255,255,255,0.85);margin:8px 0 0 0;font-size:14px;">Sistema de gestión de cuidados</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:40px 35px;">
+                            <p style="color:#333;font-size:16px;margin:0 0 10px 0;">Hola, <strong>{usuario.nombre}</strong></p>
+                            <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 25px 0;">
+                                Recibimos una solicitud para restablecer la contraseña de tu cuenta en CuidarTech. Usa el siguiente código para continuar:
+                            </p>
+                            <div style="background:#f5f7fb;border-radius:12px;padding:25px;text-align:center;margin:0 0 25px 0;">
+                                <p style="color:#888;font-size:13px;margin:0 0 10px 0;text-transform:uppercase;letter-spacing:1px;">Tu código de verificación</p>
+                                <span style="font-size:42px;font-weight:bold;letter-spacing:10px;color:#333;">{codigo}</span>
+                                <p style="color:#e74c3c;font-size:13px;margin:15px 0 0 0;">⏱ Este código expira en <strong>10 minutos</strong></p>
+                            </div>
+                            <p style="color:#888;font-size:13px;line-height:1.6;margin:0;">
+                                Si no solicitaste este cambio puedes ignorar este mensaje. Tu cuenta permanece segura.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background:#f9f9f9;padding:20px 35px;border-top:1px solid #eee;text-align:center;">
+                            <p style="color:#aaa;font-size:12px;margin:0;">© 2026 CuidarTech · Este es un correo automático, por favor no respondas.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+'''
+
+            from django.core.mail import EmailMessage
+            msg = EmailMessage(
+                subject='Código de recuperación - CuidarTech',
+                body=texto_html,
+                from_email=None,
+                to=[correo]
             )
+            msg.content_subtype = "html"
+            msg.send()
 
             request.session['recuperacion_usuario'] = usuario.id_usuario
             return redirect('verificar_codigo')
