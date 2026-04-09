@@ -60,3 +60,21 @@ class Paciente(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+class PlanCuidado(models.Model):
+
+    id_plan = models.AutoField(primary_key=True)
+    id_paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        db_column='id_paciente'
+    )
+    descripcion = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    estado = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'planes_cuidado'
+
+    def __str__(self):
+        return f"Plan de {self.id_paciente.nombre}"
