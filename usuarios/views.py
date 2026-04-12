@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils import timezone
 from datetime import timedelta
+from .models import Usuario, RecuperacionPassword, Paciente, PlanCuidado
 import random
 
 
@@ -372,3 +373,115 @@ def desactivar_paciente(request, id_paciente):
         pass
 
     return redirect('lista_pacientes')
+
+# ── PLANES DE CUIDADO ──────────────────────────────────────────────────────────
+
+# ── LISTA PLANES ───────────────────────────────────────────────────────────────
+@solo_cuidador
+def lista_planes(request):
+    usuario_id = request.session.get('usuario_id')
+    pacientes = Paciente.objects.filter(id_cuidador_id=usuario_id, estado=True)
+    planes = PlanCuidado.objects.filter(id_paciente__id_cuidador_id=usuario_id)
+    return render(request, 'planes/lista_planes.html', {
+        'planes': planes,
+        'pacientes': pacientes
+    })
+
+
+# ── CREAR PLAN ─────────────────────────────────────────────────────────────────
+@solo_cuidador
+def crear_plan(request):
+    usuario_id = request.session.get('usuario_id')
+    pacientes = Paciente.objects.filter(id_cuidador_id=usuario_id, estado=True)
+
+    if request.method == 'POST':
+        id_paciente = request.POST.get('id_paciente')
+        descripcion = request.POST.get('descripcion', '').strip()
+
+        if not id_paciente or not descripcion:
+            return render(request, 'planes/crear_plan.html', {
+                'pacientes': pacientes,
+                'error': 'Todos los campos son obligatorios.'
+            })
+
+        PlanCuidado.objects.create(
+            id_paciente_id=id_paciente,
+            descripcion=descripcion,
+            estado=True
+        )
+
+        messages.success(request, 'Plan de cuidado creado correctamente.')
+        return redirect('lista_planes')
+
+    return render(request, 'planes/crear_plan.html', {
+        'pacientes': pacientes
+    })
+
+
+# ── DETALLE PLAN ───────────────────────────────────────────────────────────────
+@solo_cuidador
+def detalle_plan(request, id_plan):
+    try:
+        plan = PlanCuidado.objects.get(
+            id_plan=id_plan,
+            id_paciente__id_cuidador_id=request.session.get('usuario_id')
+        )
+    except PlanCuidado.DoesNotExist:
+        return redirect('lista_planes')
+
+    return render(request, 'planes/detalle_plan.html', {
+        'plan': plan
+    })
+
+
+# ── EDITAR PLAN ────────────────────────────────────────────────────────────────
+@solo_cuidador
+def editar_plan(request, id_plan):
+    try:
+        plan = PlanCuidado.objects.get(
+            id_plan=id_plan,
+            id_paciente__id_cuidador_id=request.session.get('usuario_id')
+        )
+    except PlanCuidado.DoesNotExist:
+        return redirect('lista_planes')
+
+    usuario_id = request.session.get('usuario_id')
+    pacientes = Paciente.objects.filter(id_cuidador_id=usuario_id, estado=True)
+
+    if request.method == 'POST':
+        descripcion = request.POST.get('descripcion', '').strip()
+
+        if not descripcion:
+            return render(request, 'planes/editar_plan.html', {
+                'plan': plan,
+                'pacientes': pacientes,
+                'error': 'La descripción es obligatoria.'
+            })
+
+        plan.descripcion = descripcion
+        plan.save()
+
+        messages.success(request, 'Plan actualizado correctamente.')
+        return redirect('lista_planes')
+
+    return render(request, 'planes/editar_plan.html', {
+        'plan': plan,
+        'pacientes': pacientes
+    })
+
+
+# ── DESACTIVAR PLAN ────────────────────────────────────────────────────────────
+@solo_cuidador
+def desactivar_plan(request, id_plan):
+    try:
+        plan = PlanCuidado.objects.get(
+            id_plan=id_plan,
+            id_paciente__id_cuidador_id=request.session.get('usuario_id')
+        )
+        plan.estado = False
+        plan.save()
+        messages.success(request, 'Plan desactivado correctamente.')
+    except PlanCuidado.DoesNotExist:
+        pass
+
+    return redirect('lista_planes')
