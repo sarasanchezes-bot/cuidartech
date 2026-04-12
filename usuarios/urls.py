@@ -15,4 +15,11 @@ urlpatterns = [
     path('pacientes/<int:id_paciente>/', views.detalle_paciente, name='detalle_paciente'),
     path('pacientes/<int:id_paciente>/editar/', views.editar_paciente, name='editar_paciente'),
     path('pacientes/<int:id_paciente>/desactivar/', views.desactivar_paciente, name='desactivar_paciente'),
+
+    # Planes de cuidado
+    path('planes/', views.lista_planes, name='lista_planes'),
+    path('planes/crear/', views.crear_plan, name='crear_plan'),
+    path('planes/<int:id_plan>/', views.detalle_plan, name='detalle_plan'),
+    path('planes/<int:id_plan>/editar/', views.editar_plan, name='editar_plan'),
+    path('planes/<int:id_plan>/desactivar/', views.desactivar_plan, name='desactivar_plan'),
 ]
