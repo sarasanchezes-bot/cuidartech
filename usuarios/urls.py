@@ -30,4 +30,10 @@ urlpatterns = [
     #Home 
     path('', views.home, name='home'),
     path('home/', views.home, name='home_alt'),
+
+    # Actividades
+    path('actividades/', views.lista_actividades),
+    path('actividades/crear/', views.crear_actividad),
+    path('actividades/<int:id>/', views.ver_actividad),
+    path('actividades/<int:id>/editar/', views.editar_actividad),
 ]
