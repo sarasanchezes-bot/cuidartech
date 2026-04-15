@@ -1,1 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Editar Actividad - CuidarTech</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+body { background:#f5f7fb; display:flex; }
+.sidebar { width:250px; height:100vh; background:white; padding:25px; box-shadow:2px 0 10px rgba(0,0,0,0.05); display:flex; flex-direction:column; position:fixed; }
+.sidebar h2 { margin-bottom:40px; color:#333; }
+.sidebar ul { list-style:none; }
+.sidebar ul li { padding:12px 15px; margin-bottom:10px; border-radius:10px; color:#555; }
+.sidebar ul li:hover { background:#f2f4f8; }
+.sidebar ul li.active { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; }
+.sidebar ul li a { text-decoration:none; color:inherit; display:block; }
+.logout { margin-top:auto; color:red; }
+.main { margin-left:250px; flex:1; padding:35px; }
+.form-card { background:white; border-radius:15px; padding:35px; max-width:600px; box-shadow:0 5px 15px rgba(0,0,0,0.05); }
+.form-card h1 { color:#333; margin-bottom:25px; }
+.error { color:#e74c3c; margin-bottom:15px; font-size:14px; }
+label { display:block; color:#555; font-size:14px; margin-bottom:6px; }
+input, textarea { width:100%; padding:12px; border:1px solid #ddd; border-radius:10px; font-size:14px; margin-bottom:20px; font-family:'Segoe UI',sans-serif; }
+input:focus, textarea:focus { outline:none; border-color:#7ab6ff; }
+textarea { height:100px; resize:vertical; }
+.botones { display:flex; gap:12px; }
+.btn-guardar { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; border:none; padding:12px 28px; border-radius:10px; cursor:pointer; font-size:15px; }
+.btn-cancelar { background:#f5f7fb; color:#555; border:1px solid #ddd; padding:12px 28px; border-radius:10px; cursor:pointer; font-size:15px; text-decoration:none; }
+</style>
+</head>
+<body>
 
+<aside class="sidebar">
+    <h2>Cuidar-Tech</h2>
+    <ul>
+        <li><a href="/dashboard/">Dashboard</a></li>
+        <li><a href="/pacientes/">Gestión de Pacientes</a></li>
+        <li><a href="#">Planes de Cuidado</a></li>
+        <li class="active"><a href="/actividades/">Actividades</a></li>
+        <li><a href="#">Registro Diario</a></li>
+        <li><a href="#">Recordatorios</a></li>
+        <li><a href="#">Mi Perfil</a></li>
+    </ul>
+    <div class="logout"><a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a></div>
+</aside>
+
+<main class="main">
+    <div class="form-card">
+        <h1>Editar Actividad</h1>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Nombre *</label>
+            <input type="text" name="nombre" value="{{ actividad.nombre }}" required>
+
+            <label>Descripción</label>
+            <textarea name="descripcion">{{ actividad.descripcion }}</textarea>
+
+            <div class="botones">
+                <button type="submit" class="btn-guardar">Actualizar actividad</button>
+                <a href="/actividades/" class="btn-cancelar">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
