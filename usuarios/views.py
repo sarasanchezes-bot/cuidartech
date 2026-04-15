@@ -540,7 +540,10 @@ def lista_actividades(request):
 def crear_actividad(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
-        descripcion = request.POST.get('descripcion')
+        tipo = request.POST.get('tipo')
+        hora_programada = request.POST.get('hora_programada')
+        frecuencia = request.POST.get('frecuencia')
+        id_plan = request.POST.get('id_plan')
 
         if not nombre:
             return render(request, 'actividades/crear_actividad.html', {
@@ -548,20 +551,23 @@ def crear_actividad(request):
             })
 
         ActividadCuidado.objects.create(
-            nombre=nombre,
-            descripcion=descripcion,
-            estado=True
+            nombre_actividad=nombre,
+            tipo=tipo,
+            hora_programada=hora_programada,
+            frecuencia=frecuencia,
+            id_plan_id=id_plan  
         )
 
         messages.success(request, 'Actividad creada correctamente')
-        return redirect('/actividades/')
+        return redirect('lista_actividades')
 
     return render(request, 'actividades/crear_actividad.html')
 
 
 # VER DETALLE ACTIVIDAD
 def ver_actividad(request, id):
-    actividad = get_object_or_404(ActividadCuidado, id=id)
+    actividad = get_object_or_404(ActividadCuidado, id_actividad=id)
+
     return render(request, 'actividades/ver_actividad.html', {
         'actividad': actividad
     })
@@ -569,11 +575,13 @@ def ver_actividad(request, id):
 
 # EDITAR ACTIVIDAD
 def editar_actividad(request, id):
-    actividad = get_object_or_404(ActividadCuidado, id=id)
+    actividad = get_object_or_404(ActividadCuidado, id_actividad=id)
 
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
-        descripcion = request.POST.get('descripcion')
+        tipo = request.POST.get('tipo')
+        hora_programada = request.POST.get('hora_programada')
+        frecuencia = request.POST.get('frecuencia')
 
         if not nombre:
             return render(request, 'actividades/editar_actividad.html', {
@@ -581,12 +589,14 @@ def editar_actividad(request, id):
                 'error': 'El nombre es obligatorio'
             })
 
-        actividad.nombre = nombre
-        actividad.descripcion = descripcion
+        actividad.nombre_actividad = nombre
+        actividad.tipo = tipo
+        actividad.hora_programada = hora_programada
+        actividad.frecuencia = frecuencia
         actividad.save()
 
         messages.success(request, 'Actividad actualizada correctamente')
-        return redirect('/actividades/')
+        return redirect('lista_actividades')
 
     return render(request, 'actividades/editar_actividad.html', {
         'actividad': actividad
