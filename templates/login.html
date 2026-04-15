@@ -120,8 +120,8 @@ button:hover{
 <p class="error">{{ error }}</p>
 {% endif %}
 
-<form method="POST" action="/">
-{% csrf_token %}
+<form method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
 
 <label>Correo</label>
 <input type="email" name="correo" placeholder="Ingresa tu correo" required>
