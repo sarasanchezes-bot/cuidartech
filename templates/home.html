@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>CuidarTech</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+/* BASE */
+
+body{
+margin:0;
+font-family:'Segoe UI', Tahoma, sans-serif;
+background:#f9fafb;
+color:#333;
+}
+
+h1,h2,h3{
+margin:0;
+}
+
+p{
+color:#555;
+line-height:1.6;
+}
+
+/* NAVBAR */
+
+.navbar{
+background:white;
+padding:15px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+position:sticky;
+top:0;
+z-index:10;
+}
+
+.logo{
+font-weight:bold;
+font-size:18px;
+color:#5fa8d3;
+}
+
+.nav-links a{
+margin-left:20px;
+text-decoration:none;
+color:#555;
+font-size:14px;
+transition:0.3s;
+}
+
+.nav-links a:hover{
+color:#000;
+}
+
+/* HERO */
+
+.hero{
+background:linear-gradient(90deg,#f8eef2,#f4e4ea);
+padding:100px 40px;
+text-align:center;
+}
+
+.hero h1{
+font-size:32px;
+margin-bottom:15px;
+}
+
+.hero p{
+max-width:600px;
+margin:auto;
+}
+
+/* BOTONES */
+
+.buttons{
+margin-top:25px;
+}
+
+.btn{
+padding:12px 25px;
+margin:5px;
+border-radius:10px;
+text-decoration:none;
+color:white;
+font-size:14px;
+display:inline-block;
+transition:all 0.3s ease;
+}
+
+.btn-login{
+background:#5fa8d3;
+}
+
+.btn-register{
+background:#f39ab0;
+}
+
+.btn:hover{
+transform:translateY(-2px);
+opacity:0.95;
+}
+
+/* SECCIONES */
+
+.section{
+padding:80px 40px;
+text-align:center;
+}
+
+.section h2{
+margin-bottom:20px;
+}
+
+/* CARDS */
+
+.cards{
+display:flex;
+justify-content:center;
+gap:25px;
+flex-wrap:wrap;
+margin-top:30px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:15px;
+width:260px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+transition:all 0.3s ease;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card h3{
+margin-bottom:10px;
+}
+
+/* CONTACTO */
+
+.contact{
+background:#ffffff;
+}
+
+/* FOOTER */
+
+footer{
+background:#f0f0f0;
+text-align:center;
+padding:25px;
+font-size:13px;
+color:#666;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+<div class="logo">Cuidar-Tech</div>
+<div class="nav-links">
+<a href="#">Inicio</a>
+<a href="#nosotros">Nosotros</a>
+<a href="#funciones">Funciones</a>
+<a href="#contacto">Contacto</a>
+</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+<h1>Cuidar también puede ser más simple</h1>
+<p>
+Una forma clara y organizada de acompañar el cuidado de quienes lo necesitan. 
+Registra, consulta y supervisa la información importante en un solo lugar.
+</p>
+
+<div class="buttons">
+<a href="{% url 'login' %}" class="btn btn-login">Iniciar sesión</a>
+<a href="{% url 'registro' %}" class="btn btn-register">Crear cuenta</a>
+</div>
+</div>
+
+<!-- SOBRE NOSOTROS -->
+<div class="section" id="nosotros">
+<h2>Sobre nosotros</h2>
+<p>
+Cuidar-Tech nace como una solución para facilitar la comunicación y el seguimiento 
+en el cuidado de personas dependientes. Está pensado para brindar claridad, orden 
+y apoyo tanto a cuidadores como a familiares.
+</p>
+</div>
+
+<!-- FUNCIONES -->
+<div class="section" id="funciones">
+<h2>¿Qué puedes hacer?</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>📝 Registrar actividades</h3>
+<p>Guarda de forma organizada las tareas realizadas durante el cuidado diario.</p>
+</div>
+
+<div class="card">
+<h3>👀 Supervisar en tiempo real</h3>
+<p>Consulta la información actualizada desde cualquier momento y lugar.</p>
+</div>
+
+<div class="card">
+<h3>📊 Consultar historial</h3>
+<p>Accede a registros anteriores para tener un mejor control del proceso.</p>
+</div>
+
+</div>
+</div>
+
+<!-- CONTACTO -->
+<div class="section contact" id="contacto">
+<h2>Contacto</h2>
+<p>
+Si deseas más información sobre el sistema o el proyecto, puedes comunicarte 
+con el equipo de desarrollo a través de los canales institucionales definidos.
+</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+© 2026 CuidarTech — Proyecto académico de Ingeniería de Software
+</footer>
+
+</body>
+</html>

@@ -28,6 +28,40 @@ def login_view(request):
 
     return render(request, 'login.html')
 
+# ── DASHBOARD FAMILIAR ─────────────────────────────────────────────────────────
+def dashboard_familiar(request):
+    if 'usuario_id' not in request.session:
+        return redirect('login')
+    if request.session.get('usuario_rol') != 2:
+        return redirect('dashboard')
+
+    usuario_id = request.session.get('usuario_id')
+    nombre = request.session.get('usuario_nombre', 'Usuario')
+
+    # Obtener pacientes activos que tenga asignados como familiar
+    # Por ahora mostramos todos los pacientes activos del sistema
+    # (cuando se implemente la relación familiar-paciente se filtrará)
+    pacientes = Paciente.objects.filter(estado=True)
+
+    # Tomar el primer paciente para mostrar en el panel principal
+    paciente_principal = pacientes.first()
+
+    # Planes activos asociados
+    planes_activos = PlanCuidado.objects.filter(
+        id_paciente__estado=True,
+        estado=True
+    ).select_related('id_paciente')
+
+    context = {
+        'nombre': nombre,
+        'pacientes': pacientes,
+        'paciente_principal': paciente_principal,
+        'planes_activos': planes_activos,
+        'total_pacientes': pacientes.count(),
+        'total_planes': planes_activos.count(),
+    }
+    return render(request, 'dashboard_familiar.html', context)
+
 
 # ── RECUPERAR CONTRASEÑA ───────────────────────────────────────────────────────
 def recuperar_password(request):
@@ -211,7 +245,7 @@ def dashboard(request):
     if id_rol == 1:
         return render(request, 'dashboard_cuidador.html', {'nombre': nombre})
     elif id_rol == 2:
-        return render(request, 'dashboard_familiar.html', {'nombre': nombre})
+        return redirect('dashboard_familiar')
     else:
         return render(request, 'dashboard_cuidador.html', {'nombre': nombre})
 
@@ -485,3 +519,7 @@ def desactivar_plan(request, id_plan):
         pass
 
     return redirect('lista_planes')
+
+# ── Home────────────────────────────────────────────────────────────
+def home(request):
+    return render(request, 'home.html')

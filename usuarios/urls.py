@@ -22,4 +22,11 @@ urlpatterns = [
     path('planes/<int:id_plan>/', views.detalle_plan, name='detalle_plan'),
     path('planes/<int:id_plan>/editar/', views.editar_plan, name='editar_plan'),
     path('planes/<int:id_plan>/desactivar/', views.desactivar_plan, name='desactivar_plan'),
+
+    #Dahboard familiar
+    path('dashboard/familiar/', views.dashboard_familiar, name='dashboard_familiar'),
+
+    #Home 
+    path('', views.home, name='home'),
+    path('home/', views.home, name='home_alt'),
 ]
