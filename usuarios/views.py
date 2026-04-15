@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import Usuario, RecuperacionPassword, Paciente, PlanCuidado
 import random
-
+from django.contrib.auth.hashers import make_password, check_password
 
 # ── LOGIN ──────────────────────────────────────────────────────────────────────
 def login_view(request):
@@ -17,11 +17,15 @@ def login_view(request):
         password = request.POST.get('password')
 
         try:
-            usuario = Usuario.objects.get(correo=correo, password=password)
-            request.session['usuario_id'] = usuario.id_usuario
-            request.session['usuario_nombre'] = usuario.nombre
-            request.session['usuario_rol'] = usuario.id_rol  
-            return redirect('dashboard')
+            usuario = Usuario.objects.get(correo=correo)
+
+            if check_password(password, usuario.password):
+                request.session['usuario_id'] = usuario.id_usuario
+                request.session['usuario_nombre'] = usuario.nombre
+                request.session['usuario_rol'] = usuario.id_rol  
+                return redirect('dashboard')
+            else:
+                messages.error(request, "Correo o contraseña incorrectos")
 
         except Usuario.DoesNotExist:
             messages.error(request, "Correo o contraseña incorrectos")
@@ -218,7 +222,7 @@ def reset_password(request):
 
         try:
             usuario = Usuario.objects.get(id_usuario=usuario_id)
-            usuario.password = nueva_password
+            usuario.password = make_password(nueva_password)
             usuario.save()
 
             # Limpiar sesión de recuperación
@@ -287,7 +291,7 @@ def registro(request):
             nombre=nombre,
             correo=correo,
             telefono=telefono,
-            password=password,
+            password=make_password(password),
             id_rol=id_rol
         )
 
