@@ -32,8 +32,8 @@ urlpatterns = [
     path('home/', views.home, name='home_alt'),
 
     # Actividades
-    path('actividades/', views.lista_actividades),
-    path('actividades/crear/', views.crear_actividad),
-    path('actividades/<int:id>/', views.ver_actividad),
-    path('actividades/<int:id>/editar/', views.editar_actividad),
+    path('actividades/', views.lista_actividades, name='lista_actividades'),
+    path('actividades/crear/', views.crear_actividad, name='crear_actividad'),
+    path('actividades/<int:id>/', views.ver_actividad, name='ver_actividad'),
+    path('actividades/<int:id>/editar/', views.editar_actividad, name='editar_actividad'),
 ]

@@ -544,7 +544,7 @@ def home(request):
 
 
 # ── LISTAR ACTIVIDADES ───────────────────────────────────────────────
-def lista_actividades(request):
+def lista_actividad(request):
     actividades = ActividadCuidado.objects.all()
     return render(request, 'actividades/lista_actividades.html', {
         'actividades': actividades
