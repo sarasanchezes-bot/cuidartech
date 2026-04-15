@@ -527,3 +527,67 @@ def desactivar_plan(request, id_plan):
 # ── Home────────────────────────────────────────────────────────────
 def home(request):
     return render(request, 'home.html')
+
+# LISTAR ACTIVIDADES
+def lista_actividades(request):
+    actividades = ActividadDiaria.objects.all()
+    return render(request, 'actividades/lista_actividades.html', {
+        'actividades': actividades
+    })
+
+
+# CREAR ACTIVIDAD
+def crear_actividad(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+
+        if not nombre:
+            return render(request, 'actividades/crear_actividad.html', {
+                'error': 'El nombre es obligatorio'
+            })
+
+        ActividadDiaria.objects.create(
+            nombre=nombre,
+            descripcion=descripcion,
+            estado=True
+        )
+
+        messages.success(request, 'Actividad creada correctamente')
+        return redirect('/actividades/')
+
+    return render(request, 'actividades/crear_actividad.html')
+
+
+# VER DETALLE ACTIVIDAD
+def ver_actividad(request, id):
+    actividad = get_object_or_404(ActividadDiaria, id=id)
+    return render(request, 'actividades/ver_actividad.html', {
+        'actividad': actividad
+    })
+
+
+# EDITAR ACTIVIDAD
+def editar_actividad(request, id):
+    actividad = get_object_or_404(ActividadDiaria, id=id)
+
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+
+        if not nombre:
+            return render(request, 'actividades/editar_actividad.html', {
+                'actividad': actividad,
+                'error': 'El nombre es obligatorio'
+            })
+
+        actividad.nombre = nombre
+        actividad.descripcion = descripcion
+        actividad.save()
+
+        messages.success(request, 'Actividad actualizada correctamente')
+        return redirect('/actividades/')
+
+    return render(request, 'actividades/editar_actividad.html', {
+        'actividad': actividad
+    })
