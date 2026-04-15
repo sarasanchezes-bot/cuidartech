@@ -530,7 +530,7 @@ def home(request):
 
 # LISTAR ACTIVIDADES
 def lista_actividades(request):
-    actividades = ActividadDiaria.objects.all()
+    actividades = ActividadCuidado.objects.all()
     return render(request, 'actividades/lista_actividades.html', {
         'actividades': actividades
     })
@@ -547,7 +547,7 @@ def crear_actividad(request):
                 'error': 'El nombre es obligatorio'
             })
 
-        ActividadDiaria.objects.create(
+        ActividadCuidado.objects.create(
             nombre=nombre,
             descripcion=descripcion,
             estado=True
@@ -561,7 +561,7 @@ def crear_actividad(request):
 
 # VER DETALLE ACTIVIDAD
 def ver_actividad(request, id):
-    actividad = get_object_or_404(ActividadDiaria, id=id)
+    actividad = get_object_or_404(ActividadCuidado, id=id)
     return render(request, 'actividades/ver_actividad.html', {
         'actividad': actividad
     })
@@ -569,7 +569,7 @@ def ver_actividad(request, id):
 
 # EDITAR ACTIVIDAD
 def editar_actividad(request, id):
-    actividad = get_object_or_404(ActividadDiaria, id=id)
+    actividad = get_object_or_404(ActividadCuidado, id=id)
 
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
