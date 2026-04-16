@@ -121,7 +121,11 @@ button:hover{
 {% endif %}
 
 <form method="POST" action="{% url 'login' %}">
+<<<<<<< HEAD
 {% csrf_token %}
+=======
+    {% csrf_token %}
+>>>>>>> 449256bc4dc09f6a8596f83d1f5501b961c078ce
 
 <label>Correo</label>
 <input type="email" name="correo" placeholder="Ingresa tu correo" required>

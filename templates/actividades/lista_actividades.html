@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Actividades - CuidarTech</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'actividades/styles.css' %}">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+body { background:#f5f7fb; display:flex; }
+
+.sidebar {
+    width:250px; height:100vh; background:white;
+    padding:25px; box-shadow:2px 0 10px rgba(0,0,0,0.05);
+    display:flex; flex-direction:column; position:fixed;
+}
+.sidebar h2 { margin-bottom:40px; color:#333; }
+.sidebar ul { list-style:none; }
+.sidebar ul li { padding:12px 15px; margin-bottom:10px; border-radius:10px; cursor:pointer; color:#555; }
+.sidebar ul li:hover { background:#f2f4f8; }
+.sidebar ul li.active { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; }
+.sidebar ul li a { text-decoration:none; color:inherit; display:block; }
+.logout { margin-top:auto; color:red; cursor:pointer; }
+
+.main { margin-left:250px; flex:1; padding:35px; }
+.header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+.header h1 { color:#333; }
+
+.btn-agregar {
+    background:linear-gradient(90deg,#7ab6ff,#f3a6b7);
+    color:white; border:none; padding:12px 24px;
+    border-radius:10px; cursor:pointer; font-size:14px;
+    text-decoration:none;
+}
+
+.tabla-container {
+    background:white; border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.05); overflow:hidden;
+}
+
+table { width:100%; border-collapse:collapse; }
+thead { background:#f5f7fb; }
+th { padding:15px 20px; text-align:left; color:#888; font-size:13px; text-transform:uppercase; }
+td { padding:15px 20px; border-top:1px solid #f0f0f0; color:#333; }
+
+.estado-activo {
+    background:#e8f5e9; color:#2e7d32;
+    padding:4px 12px; border-radius:20px; font-size:12px;
+}
+.estado-inactivo {
+    background:#fce4e4; color:#c62828;
+    padding:4px 12px; border-radius:20px; font-size:12px;
+}
+
+.acciones { display:flex; gap:8px; }
+.btn-ver { background:#e3f2fd; color:#1565c0; border:none; padding:6px 14px; border-radius:8px; cursor:pointer; text-decoration:none; font-size:13px; }
+.btn-editar { background:#fff8e1; color:#f57f17; border:none; padding:6px 14px; border-radius:8px; cursor:pointer; text-decoration:none; font-size:13px; }
+.btn-eliminar { background:#fce4e4; color:#c62828; border:none; padding:6px 14px; border-radius:8px; cursor:pointer; font-size:13px; }
+
+.sin-actividades { text-align:center; padding:60px; color:#aaa; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <h2>Cuidar-Tech</h2>
+    <ul>
+        <li><a href="/dashboard/">Dashboard</a></li>
+        <li><a href="/pacientes/">Gestión de Pacientes</a></li>
+        <li><a href="/planes/">Planes de Cuidado</a></li>
+        <li class="active"><a href="/actividades/">Actividades</a></li>
+        <li><a href="#">Registro Diario</a></li>
+        <li><a href="#">Recordatorios</a></li>
+        <li><a href="#">Mi Perfil</a></li>
+    </ul>
+    <div class="logout"><a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a></div>
+</aside>
+
+<main class="main">
+
+    <div class="header">
+        <h1>Gestión de Actividades</h1>
+        <a href="/actividades/crear/" class="btn-agregar">+ Agregar actividad</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color:green;margin-bottom:15px;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <div class="tabla-container">
+        {% if actividades %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for actividad in actividades %}
+                <tr>
+                    <td>{{ actividad.nombre }}</td>
+                    <td>{{ actividad.descripcion|default:"Sin descripción" }}</td>
+                    <td>
+                        {% if actividad.estado %}
+                            <span class="estado-activo">Activa</span>
+                        {% else %}
+                            <span class="estado-inactivo">Inactiva</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="acciones">
+                            <a href="/actividades/{{ actividad.id }}/" class="btn-ver">Ver</a>
+                            <a href="/actividades/{{ actividad.id }}/editar/" class="btn-editar">Editar</a>
+
+                            <form method="POST" action="/actividades/{{ actividad.id }}/eliminar/" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar esta actividad?')">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="sin-actividades">
+            <p>No tienes actividades registradas aún.</p>
+            <a href="/actividades/crear/" class="btn-agregar" style="display:inline-block;margin-top:15px;">+ Agregar primera actividad</a>
+        </div>
+        {% endif %}
+    </div>
+
+</main>
+</body>
+</html>

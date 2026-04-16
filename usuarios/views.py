@@ -7,6 +7,8 @@ from datetime import timedelta
 from .models import Usuario, RecuperacionPassword, Paciente, PlanCuidado
 import random
 from django.contrib.auth.hashers import make_password, check_password
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import ActividadCuidado
 
 # ── LOGIN ──────────────────────────────────────────────────────────────────────
 def login_view(request):
@@ -536,3 +538,87 @@ def desactivar_plan(request, id_plan):
 # ── Home────────────────────────────────────────────────────────────
 def home(request):
     return render(request, 'home.html')
+
+# LISTAR ACTIVIDADES
+def lista_actividades(request):
+    actividades = ActividadCuidado.objects.all()
+    return render(request, 'actividades/lista_actividades.html', {
+        'actividades': actividades
+    })
+
+
+# ── HOME ─────────────────────────────────────────────────────────────
+def home(request):
+    return render(request, 'home.html')
+
+
+# ── LISTAR ACTIVIDADES ───────────────────────────────────────────────
+def lista_actividad(request):
+    actividades = ActividadCuidado.objects.all()
+    return render(request, 'actividades/lista_actividades.html', {
+        'actividades': actividades
+    })
+
+
+# ── CREAR ACTIVIDAD ──────────────────────────────────────────────────
+def crear_actividad(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        tipo = request.POST.get('tipo')
+        hora_programada = request.POST.get('hora_programada')
+        frecuencia = request.POST.get('frecuencia')
+        id_plan = request.POST.get('id_plan')
+
+        if not nombre or not id_plan:
+            return render(request, 'actividades/crear_actividad.html', {
+                'error': 'Nombre y plan son obligatorios'
+            })
+
+        ActividadCuidado.objects.create(
+            nombre_actividad=nombre,
+            tipo=tipo,
+            hora_programada=hora_programada,
+            frecuencia=frecuencia,
+            id_plan_id=id_plan
+        )
+
+        messages.success(request, 'Actividad creada correctamente')
+        return redirect('lista_actividades')
+
+    return render(request, 'actividades/crear_actividad.html')
+
+
+# ── VER ACTIVIDAD ────────────────────────────────────────────────────
+def ver_actividad(request, id_actividad):
+    actividad = get_object_or_404(ActividadCuidado, id_actividad=id_actividad)
+
+    return render(request, 'actividades/ver_actividad.html', {
+        'actividad': actividad
+    })
+
+
+# ── EDITAR ACTIVIDAD ─────────────────────────────────────────────────
+def editar_actividad(request, id_actividad):
+    actividad = get_object_or_404(ActividadCuidado, id_actividad=id_actividad)
+
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+
+        if not nombre:
+            return render(request, 'actividades/editar_actividad.html', {
+                'actividad': actividad,
+                'error': 'El nombre es obligatorio'
+            })
+
+        actividad.nombre_actividad = nombre
+        actividad.tipo = request.POST.get('tipo')
+        actividad.hora_programada = request.POST.get('hora_programada')
+        actividad.frecuencia = request.POST.get('frecuencia')
+        actividad.save()
+
+        messages.success(request, 'Actividad actualizada correctamente')
+        return redirect('lista_actividades')
+
+    return render(request, 'actividades/editar_actividad.html', {
+        'actividad': actividad
+    })
