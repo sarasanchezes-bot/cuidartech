@@ -120,7 +120,7 @@ button:hover{
 <p class="error">{{ error }}</p>
 {% endif %}
 
-<form method="POST" action="/">
+<form method="POST" action="{% url 'login' %}">
 {% csrf_token %}
 
 <label>Correo</label>
@@ -134,6 +134,7 @@ button:hover{
 </div>
 
 <button type="submit">Iniciar sesión</button>
+
 <p>¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a></p>
 
 <div style="margin-bottom:20px;">

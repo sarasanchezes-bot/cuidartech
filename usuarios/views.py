@@ -36,7 +36,7 @@ def login_view(request):
 def dashboard_familiar(request):
     if 'usuario_id' not in request.session:
         return redirect('login')
-    if request.session.get('usuario_rol') != 2:
+    if int(request.session.get('usuario_rol')) != 2:
         return redirect('dashboard')
 
     usuario_id = request.session.get('usuario_id')
@@ -240,19 +240,28 @@ def reset_password(request):
 # ── DASHBOARD ──────────────────────────────────────────────────────────────────
 def dashboard(request):
 
+    print("ENTRÓ AL DASHBOARD 🔥")  # 👈
+
+    if 'usuario_id' not in request.session:
+        print("NO HAY SESION ❌")  # 👈
+        return redirect('login')
+
+    print("ROL EN SESION:", request.session.get('usuario_rol'))  # 👈
+
     if 'usuario_id' not in request.session:
         return redirect('login')
 
     nombre = request.session.get('usuario_nombre', 'Usuario')
-    id_rol = request.session.get('usuario_rol')
+    id_rol = int(request.session.get('usuario_rol'))
+
+    print("ROL EN SESION:", request.session.get('usuario_rol')) 
 
     if id_rol == 1:
         return render(request, 'dashboard_cuidador.html', {'nombre': nombre})
     elif id_rol == 2:
         return redirect('dashboard_familiar')
     else:
-        return render(request, 'dashboard_cuidador.html', {'nombre': nombre})
-
+        return redirect('home')
 # ── REGISTRO ───────────────────────────────────────────────────────────────────
 def registro(request):
 
@@ -263,7 +272,7 @@ def registro(request):
         telefono = request.POST.get('telefono', '').strip()
         password = request.POST.get('password', '')
         confirmar_password = request.POST.get('confirmar_password', '')
-        id_rol = request.POST.get('id_rol')
+        id_rol = int(request.POST.get('id_rol'))
 
         # Validaciones
         if not nombre or not correo or not password or not id_rol:
