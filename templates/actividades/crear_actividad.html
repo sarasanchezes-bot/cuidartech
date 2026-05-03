@@ -3,8 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Agregar Actividad - CuidarTech</title>
-{% load static %}
-<link rel="stylesheet" href="{% static 'actividades/styles.css' %}">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
 body { background:#f5f7fb; display:flex; }
@@ -27,22 +25,25 @@ body { background:#f5f7fb; display:flex; }
 .error { color:#e74c3c; margin-bottom:15px; font-size:14px; }
 
 label { display:block; color:#555; font-size:14px; margin-bottom:6px; }
-input, textarea {
+input, textarea, select {
     width:100%; padding:12px; border:1px solid #ddd;
     border-radius:10px; font-size:14px; margin-bottom:20px;
+    font-family:'Segoe UI',sans-serif; background:white;
 }
-input:focus, textarea:focus { outline:none; border-color:#7ab6ff; }
+input:focus, textarea:focus, select:focus { outline:none; border-color:#7ab6ff; }
+textarea { height:100px; resize:vertical; }
+select { cursor:pointer; }
 
 .botones { display:flex; gap:12px; }
 .btn-guardar {
     background:linear-gradient(90deg,#7ab6ff,#f3a6b7);
     color:white; border:none; padding:12px 28px;
-    border-radius:10px; cursor:pointer;
+    border-radius:10px; cursor:pointer; font-size:15px;
 }
 .btn-cancelar {
     background:#f5f7fb; color:#555; border:1px solid #ddd;
-    padding:12px 28px; border-radius:10px;
-    text-decoration:none;
+    padding:12px 28px; border-radius:10px; cursor:pointer;
+    font-size:15px; text-decoration:none;
 }
 </style>
 </head>
@@ -55,8 +56,10 @@ input:focus, textarea:focus { outline:none; border-color:#7ab6ff; }
         <li><a href="/pacientes/">Gestión de Pacientes</a></li>
         <li><a href="#">Planes de Cuidado</a></li>
         <li class="active"><a href="/actividades/">Actividades</a></li>
+        <li><a href="/actividades/">Actividades</a></li>
+        <li><a href="#">Mi Perfil</a></li>
     </ul>
-    <div class="logout"><a href="/logout/">Cerrar sesión</a></div>
+    <div class="logout"><a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a></div>
 </aside>
 
 <main class="main">
@@ -73,8 +76,29 @@ input:focus, textarea:focus { outline:none; border-color:#7ab6ff; }
             <label>Nombre *</label>
             <input type="text" name="nombre" required>
 
+            <label>Plan de Cuidado *</label>
+            <select name="id_plan" required>
+                <option value="">-- Selecciona un plan --</option>
+                {% for plan in planes %}
+                    <option value="{{ plan.id_plan }}">
+                        {{ plan.id_paciente.nombre }} — {{ plan.descripcion|truncatechars:40 }}
+                    </option>
+                {% empty %}
+                    <option disabled>No hay planes disponibles</option>
+                {% endfor %}
+            </select>
+
+            <label>Tipo</label>
+            <input type="text" name="tipo" placeholder="Ej: Medicación, Ejercicio...">
+
+            <label>Hora programada</label>
+            <input type="time" name="hora_programada">
+
+            <label>Frecuencia</label>
+            <input type="text" name="frecuencia" placeholder="Ej: Diaria, Semanal...">
+
             <label>Descripción</label>
-            <textarea name="descripcion"></textarea>
+            <textarea name="descripcion" placeholder="Describe la actividad..."></textarea>
 
             <div class="botones">
                 <button type="submit" class="btn-guardar">Guardar actividad</button>
