@@ -562,6 +562,8 @@ def lista_actividad(request):
 
 # ── CREAR ACTIVIDAD ──────────────────────────────────────────────────
 def crear_actividad(request):
+    planes = PlanCuidado.objects.filter(estado=True)  # solo planes activos
+
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         tipo = request.POST.get('tipo')
@@ -571,7 +573,8 @@ def crear_actividad(request):
 
         if not nombre or not id_plan:
             return render(request, 'actividades/crear_actividad.html', {
-                'error': 'Nombre y plan son obligatorios'
+                'error': 'Nombre y plan son obligatorios',
+                'planes': planes
             })
 
         ActividadCuidado.objects.create(
@@ -585,8 +588,7 @@ def crear_actividad(request):
         messages.success(request, 'Actividad creada correctamente')
         return redirect('lista_actividades')
 
-    return render(request, 'actividades/crear_actividad.html')
-
+    return render(request, 'actividades/crear_actividad.html', {'planes': planes})
 
 # ── VER ACTIVIDAD ────────────────────────────────────────────────────
 def ver_actividad(request, id_actividad):
