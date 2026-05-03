@@ -593,8 +593,7 @@ def crear_actividad(request):
 # ── VER ACTIVIDAD ────────────────────────────────────────────────────
 def ver_actividad(request, id_actividad):
     actividad = get_object_or_404(ActividadCuidado, id_actividad=id_actividad)
-
-    return render(request, 'actividades/ver_actividad.html', {
+    return render(request, 'actividades/detalle_actividad.html', {
         'actividad': actividad
     })
 
@@ -610,6 +609,7 @@ def eliminar_actividad(request, id_actividad):
 # ── EDITAR ACTIVIDAD ─────────────────────────────────────────────────
 def editar_actividad(request, id_actividad):
     actividad = get_object_or_404(ActividadCuidado, id_actividad=id_actividad)
+    planes = PlanCuidado.objects.filter(estado=True)
 
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
@@ -617,6 +617,7 @@ def editar_actividad(request, id_actividad):
         if not nombre:
             return render(request, 'actividades/editar_actividad.html', {
                 'actividad': actividad,
+                'planes': planes,
                 'error': 'El nombre es obligatorio'
             })
 
@@ -624,11 +625,13 @@ def editar_actividad(request, id_actividad):
         actividad.tipo = request.POST.get('tipo')
         actividad.hora_programada = request.POST.get('hora_programada')
         actividad.frecuencia = request.POST.get('frecuencia')
+        actividad.id_plan_id = request.POST.get('id_plan')
         actividad.save()
 
         messages.success(request, 'Actividad actualizada correctamente')
         return redirect('lista_actividades')
 
     return render(request, 'actividades/editar_actividad.html', {
-        'actividad': actividad
+        'actividad': actividad,
+        'planes': planes
     })
