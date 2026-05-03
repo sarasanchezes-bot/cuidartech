@@ -34,6 +34,7 @@ urlpatterns = [
     # Actividades
     path('actividades/', views.lista_actividades, name='lista_actividades'),
     path('actividades/crear/', views.crear_actividad, name='crear_actividad'),
-    path('actividades/<int:id>/', views.ver_actividad, name='ver_actividad'),
-    path('actividades/<int:id>/editar/', views.editar_actividad, name='editar_actividad'),
+    path('actividades/<int:id_actividad>/', views.ver_actividad, name='ver_actividad'),
+    path('actividades/<int:id_actividad>/editar/', views.editar_actividad, name='editar_actividad'),
+    path('actividades/<int:id_actividad>/eliminar/', views.eliminar_actividad, name='eliminar_actividad'),
 ]
