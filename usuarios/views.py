@@ -598,6 +598,14 @@ def ver_actividad(request, id_actividad):
         'actividad': actividad
     })
 
+# ── ELIMINAR ACTIVIDAD ───────────────────────────────────────────────
+def eliminar_actividad(request, id_actividad):
+    actividad = get_object_or_404(ActividadCuidado, id_actividad=id_actividad)
+    if request.method == 'POST':
+        actividad.delete()
+        messages.success(request, 'Actividad eliminada correctamente')
+    return redirect('lista_actividades')
+
 
 # ── EDITAR ACTIVIDAD ─────────────────────────────────────────────────
 def editar_actividad(request, id_actividad):
