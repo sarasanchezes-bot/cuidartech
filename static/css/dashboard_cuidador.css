@@ -164,3 +164,19 @@ color:#333;
 .med small{
 color:#777;
 }
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.sidebar ul li a:visited {
+    color: inherit;
+}
+
+.sidebar ul li a:hover {
+    color: inherit;
+}
