@@ -24,23 +24,16 @@ urlpatterns = [
     path('planes/<int:id_plan>/editar/', views.editar_plan, name='editar_plan'),
     path('planes/<int:id_plan>/desactivar/', views.desactivar_plan, name='desactivar_plan'),
 
-    #Dahboard familiar
+    # Dashboard familiar
     path('dashboard/familiar/', views.dashboard_familiar, name='dashboard_familiar'),
 
-    #Home 
-    path('', views.home, name='home'),
+    # Home
     path('home/', views.home, name='home_alt'),
 
     # Actividades
     path('actividades/', views.lista_actividades, name='lista_actividades'),
     path('actividades/crear/', views.crear_actividad, name='crear_actividad'),
-<<<<<<< HEAD
     path('actividades/<int:id_actividad>/', views.ver_actividad, name='ver_actividad'),
     path('actividades/<int:id_actividad>/editar/', views.editar_actividad, name='editar_actividad'),
     path('actividades/<int:id_actividad>/eliminar/', views.eliminar_actividad, name='eliminar_actividad'),
 ]
-=======
-    path('actividades/<int:id>/', views.ver_actividad, name='ver_actividad'),
-    path('actividades/<int:id>/editar/', views.editar_actividad, name='editar_actividad'),
-]
->>>>>>> 4c04187 (agrega identificacion de rol en login)
