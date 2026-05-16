@@ -21,7 +21,8 @@ def login_view(request):
         try:
             usuario = Usuario.objects.get(correo=correo)
 
-            if check_password(password, usuario.password):
+            if check_password(password, usuario.password) :
+
                 request.session['usuario_id'] = usuario.id_usuario
                 request.session['usuario_nombre'] = usuario.nombre
                 request.session['usuario_rol'] = usuario.id_rol  
@@ -634,4 +635,40 @@ def editar_actividad(request, id_actividad):
     return render(request, 'actividades/editar_actividad.html', {
         'actividad': actividad,
         'planes': planes
+    })
+    
+# LOGOUT
+
+def logout_view(request):
+
+    request.session.flush()
+
+    return redirect('login')
+
+# EDITAR PERFIL
+
+from .models import Usuario
+from django.shortcuts import render, redirect
+
+def editar_perfil(request):
+
+    if 'usuario_id' not in request.session:
+        return redirect('login')
+    
+    Usuario_id = request.session.get('usuario_id')
+
+    usuario = Usuario.objects.get(id_usuario=Usuario_id)
+
+    if request.method == 'POST':
+        usuario.nombre = request.POST.get('nombre')
+        usuario.correo = request.POST.get('correo')
+        usuario.telefono = request.POST.get('telefono')
+        usuario.direccion = request.POST.get('direccion')
+        
+        usuario.save()
+
+        return redirect('dashboard')
+    
+    return render(request, 'editar_perfil.html',{
+         'usuario': usuario
     })
