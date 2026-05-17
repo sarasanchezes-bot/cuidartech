@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Notificaciones - CuidarTech</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+body { background:#f5f7fb; display:flex; }
+.sidebar { width:250px; height:100vh; background:white; padding:25px; box-shadow:2px 0 10px rgba(0,0,0,0.05); display:flex; flex-direction:column; position:fixed; }
+.sidebar h2 { margin-bottom:40px; color:#333; }
+.sidebar ul { list-style:none; }
+.sidebar ul li { padding:12px 15px; margin-bottom:10px; border-radius:10px; color:#555; }
+.sidebar ul li:hover { background:#f2f4f8; }
+.sidebar ul li.active { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; }
+.sidebar ul li a { text-decoration:none; color:inherit; display:block; }
+.logout { margin-top:auto; color:red; }
+.main { margin-left:250px; flex:1; padding:35px; }
+
+.header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+.header h1 { color:#333; }
+.badge-count {
+    background:linear-gradient(90deg,#7ab6ff,#f3a6b7);
+    color:white; padding:6px 16px;
+    border-radius:20px; font-size:14px;
+}
+
+.tabla-card {
+    background:white; border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.05);
+    overflow:hidden;
+}
+.tabla-header {
+    display:grid; grid-template-columns: 1fr 160px 120px 160px;
+    padding:14px 25px; background:#f9fafb;
+    border-bottom:1px solid #eee;
+    font-size:12px; font-weight:600;
+    color:#999; text-transform:uppercase; letter-spacing:0.5px;
+}
+.tabla-fila {
+    display:grid; grid-template-columns: 1fr 160px 120px 160px;
+    padding:18px 25px; border-bottom:1px solid #f0f0f0;
+    align-items:center; transition:background 0.2s;
+}
+.tabla-fila:last-child { border-bottom:none; }
+.tabla-fila:hover { background:#fafbfc; }
+.tabla-fila.no-leida { background:#fff8f0; }
+.tabla-fila.no-leida:hover { background:#fff3e8; }
+
+.mensaje { font-size:14px; color:#333; }
+.mensaje.negrita { font-weight:600; }
+.fecha { font-size:13px; color:#888; }
+
+.estado-badge {
+    display:inline-block; padding:4px 12px;
+    border-radius:20px; font-size:12px; font-weight:500;
+}
+.estado-no_leida { background:#fff3cd; color:#856404; }
+.estado-leida { background:#e8f5e9; color:#2e7d32; }
+
+.btn-marcar {
+    background:linear-gradient(90deg,#7ab6ff,#f3a6b7);
+    color:white; border:none; padding:8px 18px;
+    border-radius:10px; cursor:pointer; font-size:13px;
+    text-decoration:none; display:inline-block;
+}
+.sin-notificaciones {
+    padding:50px; text-align:center; color:#aaa; font-size:15px;
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <h2>Cuidar-Tech</h2>
+    <ul>
+        <li><a href="/dashboard/">Dashboard</a></li>
+        <li><a href="/pacientes/">Gestión de Pacientes</a></li>
+        <li><a href="/planes/">Planes de Cuidado</a></li>
+        <li><a href="/actividades/">Actividades</a></li>
+        <li><a href="/registros/hoy/">Registros</a></li>
+        <li class="active"><a href="/notificaciones/">Notificaciones</a></li>
+        <li><a href="/perfil/">Mi Perfil</a></li>
+    </ul>
+    <div class="logout"><a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a></div>
+</aside>
+
+<main class="main">
+    <div class="header">
+        <h1>Notificaciones</h1>
+        {% if no_leidas > 0 %}
+            <span class="badge-count">{{ no_leidas }} sin leer</span>
+        {% endif %}
+    </div>
+
+    <div class="tabla-card">
+        {% if notificaciones %}
+            <div class="tabla-header">
+                <span>Mensaje</span>
+                <span>Fecha</span>
+                <span>Estado</span>
+                <span>Acción</span>
+            </div>
+
+            {% for noti in notificaciones %}
+            <div class="tabla-fila {% if noti.estado == 'no_leida' %}no-leida{% endif %}">
+                <span class="mensaje {% if noti.estado == 'no_leida' %}negrita{% endif %}">
+                    {{ noti.mensaje }}
+                </span>
+                <span class="fecha">{{ noti.fecha_envio|date:"d/m/Y H:i" }}</span>
+                <span class="estado-badge estado-{{ noti.estado }}">
+                    {% if noti.estado == 'no_leida' %}No leída{% else %}Leída{% endif %}
+                </span>
+                <span>
+                    {% if noti.estado == 'no_leida' %}
+                        <a href="{% url 'marcar_leida' noti.id_notificacion %}" class="btn-marcar">
+                            Marcar como leída
+                        </a>
+                    {% else %}
+                        —
+                    {% endif %}
+                </span>
+            </div>
+            {% endfor %}
+
+        {% else %}
+            <div class="sin-notificaciones">
+                No tienes notificaciones por el momento.
+            </div>
+        {% endif %}
+    </div>
+</main>
+</body>
+</html>
