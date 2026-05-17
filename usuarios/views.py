@@ -541,7 +541,9 @@ def home(request):
 
 # LISTAR ACTIVIDADES
 def lista_actividades(request):
-    actividades = ActividadCuidado.objects.all()
+    actividades = ActividadCuidado.objects.all().select_related(
+        'id_plan__id_paciente'
+    )
     return render(request, 'actividades/lista_actividades.html', {
         'actividades': actividades
     })
