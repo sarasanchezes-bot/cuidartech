@@ -4,8 +4,6 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
-    path('logout/',views.logout_view, name='logout'),
-    path('editar_perfil/',views.editar_perfil, name='editar_perfil'),
     path('registro/', views.registro, name='registro'),
     path('recuperar-password/', views.recuperar_password, name='recuperar_password'),
     path('verificar-codigo/', views.verificar_codigo, name='verificar_codigo'),
@@ -38,4 +36,17 @@ urlpatterns = [
     path('actividades/<int:id_actividad>/', views.ver_actividad, name='ver_actividad'),
     path('actividades/<int:id_actividad>/editar/', views.editar_actividad, name='editar_actividad'),
     path('actividades/<int:id_actividad>/eliminar/', views.eliminar_actividad, name='eliminar_actividad'),
+
+    # Registro Diario
+    path('registros/hoy/', views.registros_hoy, name='registros_hoy'),
+    path('registros/<int:id_actividad>/registrar/', views.registrar_actividad, name='registrar_actividad'),
+    path('registros/historial/', views.historial_registros, name='historial_registros'),
+    path('registros/<int:id_registro>/', views.detalle_registro, name='detalle_registro'),
+
+    #Cerrar sesión
+    path('logout/', views.logout_view, name='logout'),
+
+    #Perfil
+    path('perfil/', views.ver_perfil, name='ver_perfil'),
+    path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
 ]

@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils import timezone
 from datetime import timedelta
-from .models import Usuario, RecuperacionPassword, Paciente, PlanCuidado
+from .models import Usuario, RecuperacionPassword, Paciente, PlanCuidado, ActividadCuidado, RegistroDiario
 import random
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import render, redirect, get_object_or_404
@@ -21,8 +21,7 @@ def login_view(request):
         try:
             usuario = Usuario.objects.get(correo=correo)
 
-            if check_password(password, usuario.password) :
-
+            if check_password(password, usuario.password):
                 request.session['usuario_id'] = usuario.id_usuario
                 request.session['usuario_nombre'] = usuario.nombre
                 request.session['usuario_rol'] = usuario.id_rol  
@@ -636,39 +635,185 @@ def editar_actividad(request, id_actividad):
         'actividad': actividad,
         'planes': planes
     })
-    
-# LOGOUT
 
+
+# ── REGISTROS DEL DÍA ────────────────────────────────────────────────
+@solo_cuidador
+def registros_hoy(request):
+    from datetime import date
+    usuario_id = request.session.get('usuario_id')
+    hoy = date.today()
+
+    # Todas las actividades de los pacientes del cuidador
+    actividades = ActividadCuidado.objects.filter(
+        id_plan__estado=True,
+        id_plan__id_paciente__estado=True,
+        id_plan__id_paciente__id_cuidador_id=usuario_id
+    ).select_related('id_plan__id_paciente')
+
+    # Por cada actividad, buscar si ya tiene registro hoy
+    actividades_con_estado = []
+    for actividad in actividades:
+        try:
+            registro = RegistroDiario.objects.get(
+                id_actividad=actividad,
+                fecha=hoy
+            )
+        except RegistroDiario.DoesNotExist:
+            registro = None
+
+        actividades_con_estado.append({
+            'actividad': actividad,
+            'registro': registro,
+        })
+
+    return render(request, 'registros/registros_hoy.html', {
+        'actividades_con_estado': actividades_con_estado,
+        'hoy': hoy,
+    })
+
+
+# ── REGISTRAR ACTIVIDAD ──────────────────────────────────────────────
+@solo_cuidador
+def registrar_actividad(request, id_actividad):
+    from datetime import date, datetime
+    usuario_id = request.session.get('usuario_id')
+    hoy = date.today()
+
+    actividad = get_object_or_404(
+        ActividadCuidado,
+        id_actividad=id_actividad,
+        id_plan__id_paciente__id_cuidador_id=usuario_id
+    )
+
+    # Si ya existe registro hoy, lo cargamos para editar
+    try:
+        registro = RegistroDiario.objects.get(id_actividad=actividad, fecha=hoy)
+    except RegistroDiario.DoesNotExist:
+        registro = None
+
+    if request.method == 'POST':
+        realizada_valor = request.POST.get('realizada')
+        observacion = request.POST.get('observacion', '').strip()
+
+        if realizada_valor == 'true':
+            realizada = True
+        elif realizada_valor == 'false':
+            realizada = False
+        else:
+            realizada = None
+
+        hora_actual = datetime.now().time()
+
+        if registro:
+            registro.realizada = realizada
+            registro.observacion = observacion
+            registro.hora_registro = hora_actual
+            registro.save()
+        else:
+            RegistroDiario.objects.create(
+                id_actividad=actividad,
+                fecha=hoy,
+                realizada=realizada,
+                observacion=observacion,
+                hora_registro=hora_actual
+            )
+
+        messages.success(request, 'Registro guardado correctamente.')
+        return redirect('registros_hoy')
+
+    return render(request, 'registros/registrar_actividad.html', {
+        'actividad': actividad,
+        'registro': registro,
+        'hoy': hoy,
+    })
+
+
+# ── HISTORIAL DE REGISTROS ───────────────────────────────────────────
+@solo_cuidador
+def historial_registros(request):
+    usuario_id = request.session.get('usuario_id')
+
+    registros = RegistroDiario.objects.filter(
+        id_actividad__id_plan__id_paciente__id_cuidador_id=usuario_id
+    ).select_related(
+        'id_actividad__id_plan__id_paciente'
+    ).order_by('-fecha', 'id_actividad__hora_programada')
+
+    return render(request, 'registros/historial_registros.html', {
+        'registros': registros,
+    })
+
+
+# ── DETALLE REGISTRO ─────────────────────────────────────────────────
+@solo_cuidador
+def detalle_registro(request, id_registro):
+    usuario_id = request.session.get('usuario_id')
+
+    registro = get_object_or_404(
+        RegistroDiario,
+        id_registro=id_registro,
+        id_actividad__id_plan__id_paciente__id_cuidador_id=usuario_id
+    )
+
+    return render(request, 'registros/detalle_registro.html', {
+        'registro': registro,
+    })
+
+# ── LOGOUT ────────────────────────────────────────────────────────────────────
 def logout_view(request):
-
     request.session.flush()
-
     return redirect('login')
 
-# EDITAR PERFIL
-
-from .models import Usuario
-from django.shortcuts import render, redirect
-
-def editar_perfil(request):
-
+# ── VER PERFIL ────────────────────────────────────────────────────────────────
+def ver_perfil(request):
     if 'usuario_id' not in request.session:
         return redirect('login')
     
-    Usuario_id = request.session.get('usuario_id')
+    usuario = get_object_or_404(Usuario, id_usuario=request.session.get('usuario_id'))
+    return render(request, 'perfil/ver_perfil.html', {'usuario': usuario})
 
-    usuario = Usuario.objects.get(id_usuario=Usuario_id)
+
+# ── EDITAR PERFIL ─────────────────────────────────────────────────────────────
+def editar_perfil(request):
+    if 'usuario_id' not in request.session:
+        return redirect('login')
+
+    usuario = get_object_or_404(Usuario, id_usuario=request.session.get('usuario_id'))
 
     if request.method == 'POST':
-        usuario.nombre = request.POST.get('nombre')
-        usuario.correo = request.POST.get('correo')
-        usuario.telefono = request.POST.get('telefono')
-        usuario.direccion = request.POST.get('direccion')
-        
+        nombre = request.POST.get('nombre', '').strip()
+        telefono = request.POST.get('telefono', '').strip()
+        direccion = request.POST.get('direccion', '').strip()
+        nueva_password = request.POST.get('nueva_password', '')
+        confirmar_password = request.POST.get('confirmar_password', '')
+
+        if not nombre:
+            return render(request, 'perfil/editar_perfil.html', {
+                'usuario': usuario,
+                'error': 'El nombre es obligatorio.'
+            })
+
+        if nueva_password:
+            if nueva_password != confirmar_password:
+                return render(request, 'perfil/editar_perfil.html', {
+                    'usuario': usuario,
+                    'error': 'Las contraseñas no coinciden.'
+                })
+            if len(nueva_password) < 6:
+                return render(request, 'perfil/editar_perfil.html', {
+                    'usuario': usuario,
+                    'error': 'La contraseña debe tener al menos 6 caracteres.'
+                })
+            usuario.password = make_password(nueva_password)
+
+        usuario.nombre = nombre
+        usuario.telefono = telefono
+        usuario.direccion = direccion
         usuario.save()
 
-        return redirect('dashboard')
-    
-    return render(request, 'editar_perfil.html',{
-         'usuario': usuario
-    })
+        request.session['usuario_nombre'] = nombre
+        messages.success(request, 'Perfil actualizado correctamente.')
+        return redirect('ver_perfil')
+
+    return render(request, 'perfil/editar_perfil.html', {'usuario': usuario})

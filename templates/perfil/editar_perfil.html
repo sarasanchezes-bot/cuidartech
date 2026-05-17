@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Editar Paciente - CuidarTech</title>
+<title>Editar Perfil - CuidarTech</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
 body { background:#f5f7fb; display:flex; }
@@ -13,18 +13,24 @@ body { background:#f5f7fb; display:flex; }
 .sidebar ul li:hover { background:#f2f4f8; }
 .sidebar ul li.active { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; }
 .sidebar ul li a { text-decoration:none; color:inherit; display:block; }
-.logout { margin-top:auto; color:red; }
+.logout { margin-top:auto; }
 .main { margin-left:250px; flex:1; padding:35px; }
+
 .form-card { background:white; border-radius:15px; padding:35px; max-width:600px; box-shadow:0 5px 15px rgba(0,0,0,0.05); }
 .form-card h1 { color:#333; margin-bottom:25px; }
 .error { color:#e74c3c; margin-bottom:15px; font-size:14px; }
+
 label { display:block; color:#555; font-size:14px; margin-bottom:6px; }
-input, textarea { width:100%; padding:12px; border:1px solid #ddd; border-radius:10px; font-size:14px; margin-bottom:20px; font-family:'Segoe UI',sans-serif; }
-input:focus, textarea:focus { outline:none; border-color:#7ab6ff; }
-textarea { height:100px; resize:vertical; }
+input { width:100%; padding:12px; border:1px solid #ddd; border-radius:10px; font-size:14px; margin-bottom:20px; font-family:'Segoe UI',sans-serif; }
+input:focus { outline:none; border-color:#7ab6ff; }
+input:disabled { background:#f5f7fb; color:#aaa; }
+
+.separador { border:none; border-top:1px solid #f0f0f0; margin:10px 0 25px 0; }
+.seccion-titulo { color:#888; font-size:13px; text-transform:uppercase; letter-spacing:1px; margin-bottom:15px; }
+
 .botones { display:flex; gap:12px; }
 .btn-guardar { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; border:none; padding:12px 28px; border-radius:10px; cursor:pointer; font-size:15px; }
-.btn-cancelar { background:#f5f7fb; color:#555; border:1px solid #ddd; padding:12px 28px; border-radius:10px; cursor:pointer; font-size:15px; text-decoration:none; }
+.btn-cancelar { background:#f5f7fb; color:#555; border:1px solid #ddd; padding:12px 28px; border-radius:10px; text-decoration:none; font-size:15px; }
 </style>
 </head>
 <body>
@@ -33,18 +39,18 @@ textarea { height:100px; resize:vertical; }
     <h2>Cuidar-Tech</h2>
     <ul>
         <li><a href="/dashboard/">Dashboard</a></li>
-        <li class="active"><a href="/pacientes/">Gestión de Pacientes</a></li>
+        <li><a href="/pacientes/">Gestión de Pacientes</a></li>
         <li><a href="/planes/">Planes de Cuidado</a></li>
         <li><a href="/actividades/">Actividades</a></li>
-        <li><a href="/registros/hoy/">Registros</a></li>
-        <li><a href="/perfil/">Mi Perfil</a></li>
+        <li><a href="/registros/hoy/">Registro Diario</a></li>
+        <li class="active"><a href="/perfil/">Mi Perfil</a></li>
     </ul>
     <div class="logout"><a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a></div>
 </aside>
 
 <main class="main">
     <div class="form-card">
-        <h1>Editar Paciente</h1>
+        <h1>Editar Perfil</h1>
 
         {% if error %}
             <p class="error">{{ error }}</p>
@@ -54,17 +60,29 @@ textarea { height:100px; resize:vertical; }
             {% csrf_token %}
 
             <label>Nombre completo *</label>
-            <input type="text" name="nombre" value="{{ paciente.nombre }}" required>
+            <input type="text" name="nombre" value="{{ usuario.nombre }}" required>
 
-            <label>Fecha de nacimiento *</label>
-            <input type="date" name="fecha_nacimiento" value="{{ paciente.fecha_nacimiento|date:'Y-m-d' }}" required>
+            <label>Correo electrónico</label>
+            <input type="email" value="{{ usuario.correo }}" disabled>
 
-            <label>Diagnóstico</label>
-            <textarea name="diagnostico">{{ paciente.diagnostico }}</textarea>
+            <label>Teléfono</label>
+            <input type="text" name="telefono" value="{{ usuario.telefono|default:'' }}" placeholder="Ej: 3001234567">
+
+            <label>Dirección</label>
+            <input type="text" name="direccion" value="{{ usuario.direccion|default:'' }}" placeholder="Ej: Calle 10 #5-20">
+
+            <hr class="separador">
+            <p class="seccion-titulo">Cambiar contraseña (opcional)</p>
+
+            <label>Nueva contraseña</label>
+            <input type="password" name="nueva_password" placeholder="Deja en blanco para no cambiarla">
+
+            <label>Confirmar nueva contraseña</label>
+            <input type="password" name="confirmar_password" placeholder="Repite la nueva contraseña">
 
             <div class="botones">
-                <button type="submit" class="btn-guardar">Actualizar paciente</button>
-                <a href="/pacientes/" class="btn-cancelar">Cancelar</a>
+                <button type="submit" class="btn-guardar">Guardar cambios</button>
+                <a href="/perfil/" class="btn-cancelar">Cancelar</a>
             </div>
         </form>
     </div>

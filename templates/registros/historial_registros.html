@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Historial de Registros - CuidarTech</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+body { background:#f5f7fb; display:flex; }
+.sidebar { width:250px; height:100vh; background:white; padding:25px; box-shadow:2px 0 10px rgba(0,0,0,0.05); display:flex; flex-direction:column; position:fixed; }
+.sidebar h2 { margin-bottom:40px; color:#333; }
+.sidebar ul { list-style:none; }
+.sidebar ul li { padding:12px 15px; margin-bottom:10px; border-radius:10px; color:#555; }
+.sidebar ul li:hover { background:#f2f4f8; }
+.sidebar ul li.active { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; }
+.sidebar ul li a { text-decoration:none; color:inherit; display:block; }
+.logout { margin-top:auto; }
+.main { margin-left:250px; flex:1; padding:35px; }
+
+.header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+.header h1 { color:#333; }
+.btn-hoy { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; border:none; padding:10px 20px; border-radius:10px; text-decoration:none; font-size:13px; }
+
+.tabla-container { background:white; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.05); overflow:hidden; }
+table { width:100%; border-collapse:collapse; }
+thead { background:#f5f7fb; }
+th { padding:15px 20px; text-align:left; color:#888; font-size:13px; text-transform:uppercase; }
+td { padding:15px 20px; border-top:1px solid #f0f0f0; color:#333; }
+
+.estado-realizada { background:#e8f5e9; color:#2e7d32; padding:4px 12px; border-radius:20px; font-size:12px; }
+.estado-no-realizada { background:#fce4e4; color:#c62828; padding:4px 12px; border-radius:20px; font-size:12px; }
+.estado-pendiente { background:#fff8e1; color:#f57f17; padding:4px 12px; border-radius:20px; font-size:12px; }
+
+.btn-ver { background:#e3f2fd; color:#1565c0; border:none; padding:6px 14px; border-radius:8px; text-decoration:none; font-size:13px; }
+.sin-registros { text-align:center; padding:60px; color:#aaa; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <h2>Cuidar-Tech</h2>
+    <ul>
+        <li><a href="/dashboard/">Dashboard</a></li>
+        <li><a href="/pacientes/">Gestión de Pacientes</a></li>
+        <li><a href="/planes/">Planes de Cuidado</a></li>
+        <li><a href="/actividades/">Actividades</a></li>
+        <li class="active"><a href="/registros/hoy/">Registro Diario</a></li>
+        <li><a href="/perfil/">Mi Perfil</a></li>
+    </ul>
+    <div class="logout"><a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a></div>
+</aside>
+
+<main class="main">
+    <div class="header">
+        <h1>Historial de Registros</h1>
+        <a href="/registros/hoy/" class="btn-hoy">← Volver a hoy</a>
+    </div>
+
+    <div class="tabla-container">
+        {% if registros %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Actividad</th>
+                    <th>Paciente</th>
+                    <th>Hora registro</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                <tr>
+                    <td>{{ registro.fecha }}</td>
+                    <td>{{ registro.id_actividad.nombre_actividad }}</td>
+                    <td>{{ registro.id_actividad.id_plan.id_paciente.nombre }}</td>
+                    <td>{{ registro.hora_registro|default:"—" }}</td>
+                    <td>
+                        {% if registro.realizada == True %}
+                            <span class="estado-realizada">Realizada</span>
+                        {% elif registro.realizada == False %}
+                            <span class="estado-no-realizada">No realizada</span>
+                        {% else %}
+                            <span class="estado-pendiente">Pendiente</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/registros/{{ registro.id_registro }}/" class="btn-ver">Ver detalle</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="sin-registros">
+            <p>Aún no hay registros guardados.</p>
+        </div>
+        {% endif %}
+    </div>
+</main>
+</body>
+</html>
