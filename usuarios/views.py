@@ -347,12 +347,18 @@ def agregar_paciente(request):
                 'error': 'Nombre y fecha de nacimiento son obligatorios.'
             })
 
-        Paciente.objects.create(
+        paciente = Paciente.objects.create(
             nombre=nombre,
             fecha_nacimiento=fecha_nacimiento,
             diagnostico=diagnostico,
             estado=True,
             id_cuidador_id=usuario_id
+        )
+
+        Notificacion.objects.create(
+            id_usuario_id=usuario_id,
+            mensaje=f'Se agregó el paciente {paciente.nombre} correctamente.',
+            estado='no_leida'
         )
 
         messages.success(request, 'Paciente registrado correctamente.')
@@ -454,10 +460,16 @@ def crear_plan(request):
                 'error': 'Todos los campos son obligatorios.'
             })
 
-        PlanCuidado.objects.create(
+        plan = PlanCuidado.objects.create(
             id_paciente_id=id_paciente,
             descripcion=descripcion,
             estado=True
+        )
+
+        Notificacion.objects.create(
+            id_usuario_id=usuario_id,
+            mensaje=f'Se creó el plan "{plan.descripcion}" para {plan.id_paciente.nombre}.',
+            estado='no_leida'
         )
 
         messages.success(request, 'Plan de cuidado creado correctamente.')
@@ -510,6 +522,12 @@ def editar_plan(request, id_plan):
 
         plan.descripcion = descripcion
         plan.save()
+
+        Notificacion.objects.create(
+            id_usuario_id=usuario_id,
+            mensaje=f'Se actualizó el plan "{plan.descripcion}" para {plan.id_paciente.nombre}.',
+            estado='no_leida'
+        )
 
         messages.success(request, 'Plan actualizado correctamente.')
         return redirect('lista_planes')
