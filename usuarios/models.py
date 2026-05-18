@@ -117,3 +117,25 @@ class RegistroDiario(models.Model):
 
     def __str__(self):
         return f"{self.id_actividad.nombre_actividad} - {self.fecha}"
+    
+class Notificacion(models.Model):
+    ESTADO_CHOICES = [
+        ('no_leida', 'No leída'),
+        ('leida', 'Leída'),
+    ]
+
+    id_notificacion = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        db_column='id_usuario'
+    )
+    mensaje = models.TextField()
+    fecha_envio = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='no_leida')
+
+    class Meta:
+        db_table = 'notificaciones'
+
+    def __str__(self):
+        return f"Notificación para {self.id_usuario.nombre}"

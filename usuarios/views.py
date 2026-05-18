@@ -9,6 +9,7 @@ import random
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import ActividadCuidado
+from .models import Notificacion
 
 # ── LOGIN ──────────────────────────────────────────────────────────────────────
 def login_view(request):
@@ -819,3 +820,27 @@ def editar_perfil(request):
         return redirect('ver_perfil')
 
     return render(request, 'perfil/editar_perfil.html', {'usuario': usuario})
+
+
+def lista_notificaciones(request):
+    if 'usuario_id' not in request.session:
+        return redirect('login')
+    
+    usuario = Usuario.objects.get(pk=request.session['usuario_id'])
+    notificaciones = Notificacion.objects.filter(
+        id_usuario=usuario
+    ).order_by('-fecha_envio')
+    
+    return render(request, 'notificaciones/lista.html', {
+        'notificaciones': notificaciones,
+        'usuario': usuario,
+    })
+
+def marcar_leida(request, id_notificacion):
+    if 'usuario_id' not in request.session:
+        return redirect('login')
+    
+    notificacion = Notificacion.objects.get(pk=id_notificacion)
+    notificacion.estado = 'leida'
+    notificacion.save()
+    return redirect('lista_notificaciones')

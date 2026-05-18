@@ -49,4 +49,8 @@ urlpatterns = [
     #Perfil
     path('perfil/', views.ver_perfil, name='ver_perfil'),
     path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
+
+    #notificaciones
+    path('notificaciones/', views.lista_notificaciones, name='lista_notificaciones'),
+    path('notificaciones/<int:id_notificacion>/marcar-leida/', views.marcar_leida, name='marcar_leida'),
 ]
