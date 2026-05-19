@@ -55,6 +55,7 @@ body { background:#f5f7fb; display:flex; }
         <li><a href="/registros/hoy/">Registros</a></li>
         <li><a href="/notificaciones/">Notificaciones</a></li>
         <li><a href="/perfil/">Mi Perfil</a></li>
+        
     </ul>
     <div class="logout"><a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a></div>
 </aside>
@@ -89,6 +90,7 @@ body { background:#f5f7fb; display:flex; }
 
         <div class="botones">
             <a href="/pacientes/{{ paciente.id_paciente }}/editar/" class="btn-editar">Editar</a>
+            <a href="/pacientes/{{ paciente.id_paciente }}/familiares/" class="btn-editar">Gestionar familiares</a>
             {% if paciente.estado %}
             <form method="POST" action="/pacientes/{{ paciente.id_paciente }}/desactivar/" style="display:inline;">
                 {% csrf_token %}

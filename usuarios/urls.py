@@ -53,4 +53,8 @@ urlpatterns = [
     #notificaciones
     path('notificaciones/', views.lista_notificaciones, name='lista_notificaciones'),
     path('notificaciones/<int:id_notificacion>/marcar-leida/', views.marcar_leida, name='marcar_leida'),
+
+    #vista para que el cuidador pueda asignar familiares a sus pacientes
+    path('pacientes/<int:id_paciente>/familiares/', views.gestionar_familiares, name='gestionar_familiares'),
+    path('pacientes/<int:id_paciente>/familiares/quitar/<int:id_familiar>/', views.quitar_familiar, name='quitar_familiar'),
 ]

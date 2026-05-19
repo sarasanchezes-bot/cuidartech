@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Familiares del Paciente - CuidarTech</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+body { background:#f5f7fb; display:flex; }
+.sidebar { width:250px; height:100vh; background:white; padding:25px; box-shadow:2px 0 10px rgba(0,0,0,0.05); display:flex; flex-direction:column; position:fixed; }
+.sidebar h2 { margin-bottom:40px; color:#333; }
+.sidebar ul { list-style:none; }
+.sidebar ul li { padding:12px 15px; margin-bottom:10px; border-radius:10px; color:#555; }
+.sidebar ul li:hover { background:#f2f4f8; }
+.sidebar ul li.active { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; }
+.sidebar ul li a { text-decoration:none; color:inherit; display:block; }
+.logout { margin-top:auto; }
+.main { margin-left:250px; flex:1; padding:35px; }
+
+.header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+.header h1 { color:#333; }
+.btn-volver { background:#f5f7fb; color:#555; border:1px solid #ddd; padding:10px 20px; border-radius:10px; text-decoration:none; font-size:13px; }
+
+.form-card { background:white; border-radius:15px; padding:30px; max-width:600px; box-shadow:0 5px 15px rgba(0,0,0,0.05); margin-bottom:25px; }
+.form-card h2 { color:#333; margin-bottom:20px; font-size:18px; }
+.error { color:#e74c3c; font-size:14px; margin-bottom:15px; }
+
+label { display:block; color:#555; font-size:14px; margin-bottom:6px; }
+input { width:100%; padding:12px; border:1px solid #ddd; border-radius:10px; font-size:14px; margin-bottom:15px; }
+input:focus { outline:none; border-color:#7ab6ff; }
+
+.btn-agregar { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; border:none; padding:12px 28px; border-radius:10px; cursor:pointer; font-size:14px; }
+
+.lista-card { background:white; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.05); overflow:hidden; max-width:600px; }
+.lista-card h2 { color:#333; font-size:18px; padding:20px 25px; border-bottom:1px solid #f0f0f0; }
+.familiar-item { display:flex; justify-content:space-between; align-items:center; padding:15px 25px; border-bottom:1px solid #f0f0f0; }
+.familiar-item:last-child { border-bottom:none; }
+.familiar-info p { color:#333; font-size:15px; }
+.familiar-info small { color:#888; font-size:13px; }
+.btn-quitar { background:#fce4e4; color:#c62828; border:none; padding:6px 16px; border-radius:8px; cursor:pointer; font-size:13px; }
+.sin-familiares { text-align:center; padding:40px; color:#aaa; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <h2>Cuidar-Tech</h2>
+    <ul>
+        <li><a href="/dashboard/">Dashboard</a></li>
+        <li class="active"><a href="/pacientes/">Gestión de Pacientes</a></li>
+        <li><a href="/planes/">Planes de Cuidado</a></li>
+        <li><a href="/actividades/">Actividades</a></li>
+        <li><a href="/registros/hoy/">Registro Diario</a></li>
+        <li><a href="/notificaciones/">Notificaciones</a></li>
+        <li><a href="/perfil/">Mi Perfil</a></li>
+    </ul>
+    <div class="logout"><a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a></div>
+</aside>
+
+<main class="main">
+    <div class="header">
+        <h1>Familiares de {{ paciente.nombre }}</h1>
+        <a href="/pacientes/{{ paciente.id_paciente }}/" class="btn-volver">← Volver al paciente</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color:green;margin-bottom:15px;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <div class="form-card">
+        <h2>Asignar familiar</h2>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <label>Correo del familiar *</label>
+            <input type="email" name="correo" placeholder="correo@ejemplo.com" required>
+            <button type="submit" class="btn-agregar">Asignar familiar</button>
+        </form>
+    </div>
+
+    <div class="lista-card">
+        <h2>Familiares asignados</h2>
+        {% if familiares_asignados %}
+            {% for fp in familiares_asignados %}
+            <div class="familiar-item">
+                <div class="familiar-info">
+                    <p>{{ fp.id_familiar.nombre }}</p>
+                    <small>{{ fp.id_familiar.correo }}</small>
+                </div>
+                <form method="POST" action="/pacientes/{{ paciente.id_paciente }}/familiares/quitar/{{ fp.id_familiar.id_usuario }}/">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-quitar" onclick="return confirm('¿Quitar este familiar?')">Quitar</button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="sin-familiares">
+                <p>No hay familiares asignados a este paciente.</p>
+            </div>
+        {% endif %}
+    </div>
+</main>
+</body>
+</html>

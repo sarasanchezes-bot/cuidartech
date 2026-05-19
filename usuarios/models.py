@@ -139,3 +139,26 @@ class Notificacion(models.Model):
 
     def __str__(self):
         return f"Notificación para {self.id_usuario.nombre}"
+    
+
+class FamiliarPaciente(models.Model):
+
+    id_familiar = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        db_column='id_familiar',
+        related_name='pacientes_asignados'
+    )
+    id_paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        db_column='id_paciente',
+        related_name='familiares_asignados'
+    )
+
+    class Meta:
+        db_table = 'familiar_paciente'
+        unique_together = ('id_familiar', 'id_paciente')
+
+    def __str__(self):
+        return f"{self.id_familiar.nombre} -> {self.id_paciente.nombre}"
