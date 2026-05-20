@@ -98,7 +98,7 @@
                 <h3>Cumplimiento</h3>
                 <div class="value blue">{{ porcentaje }}%</div>
                 <div class="barra-container">
-                    <div class="barra" style="width:{{ porcentaje }}%;"></div>
+                    <div class="barra" id="barra-cumplimiento"></div>
                 </div>
             </div>
             <div class="card">
@@ -148,6 +148,8 @@
 
     {% endif %}
 </div>
-
+<script>
+    document.getElementById('barra-cumplimiento').style.width = '{{ porcentaje }}%';
+</script>
 </body>
 </html>
