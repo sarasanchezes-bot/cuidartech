@@ -107,6 +107,65 @@
             </div>
         </div>
 
+        <!-- GRÁFICA DE CUMPLIMIENTO -->
+        <div class="section" style="margin-bottom:25px;">
+            <h2>Gráfica de Cumplimiento del Día</h2>
+            <div style="display:flex; align-items:center; gap:40px; padding:10px 0; flex-wrap:wrap;">
+                
+                <!-- Gráfica circular -->
+                <div style="position:relative; width:160px; height:160px; flex-shrink:0;">
+                    <svg viewBox="0 0 36 36" style="width:160px; height:160px; transform:rotate(-90deg);">
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+                        <circle cx="18" cy="18" r="15.9" fill="none"
+                            stroke="url(#gradiente)" stroke-width="3"
+                            stroke-dasharray="{{ porcentaje }} {{ 100|add:'-'|add:porcentaje }}"
+                            stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="gradiente" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#6aa9ff"/>
+                                <stop offset="100%" style="stop-color:#f7a1c4"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
+                        <div style="font-size:22px; font-weight:700; color:#333;">{{ porcentaje }}%</div>
+                        <div style="font-size:11px; color:#aaa;">cumplido</div>
+                    </div>
+                </div>
+
+                
+                <div style="flex:1; min-width:180px;">
+                    <div style="margin-bottom:15px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <span style="font-size:13px; color:#555;">✅ Realizadas</span>
+                            <span style="font-size:13px; font-weight:600; color:#2e7d32;">{{ completadas_hoy }}</span>
+                        </div>
+                        <div style="background:#f0f0f0; border-radius:10px; height:8px;">
+                            <div style="width:{{ porcentaje }}%; height:8px; border-radius:10px; background:linear-gradient(90deg,#6aa9ff,#f7a1c4);"></div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <span style="font-size:13px; color:#555;">❌ No realizadas</span>
+                            <span style="font-size:13px; font-weight:600; color:#c62828;" id="no-realizadas">-</span>
+                        </div>
+                        <div style="background:#f0f0f0; border-radius:10px; height:8px;">
+                            <div id="barra-no-realizadas" style="height:8px; border-radius:10px; background:#f7a1a1;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <span style="font-size:13px; color:#555;">⏳ Pendientes</span>
+                            <span style="font-size:13px; font-weight:600; color:#f57f17;" id="pendientes">-</span>
+                        </div>
+                        <div style="background:#f0f0f0; border-radius:10px; height:8px;">
+                            <div id="barra-pendientes" style="height:8px; border-radius:10px; background:#ffe082;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="sections">
             <div class="section">
                 <h2>Actividades de Hoy</h2>
@@ -149,7 +208,32 @@
     {% endif %}
 </div>
 <script>
-    document.getElementById('barra-cumplimiento').style.width = '{{ porcentaje }}%';
+    const total = {{ total_actividades_hoy }};
+    const completadas = {{ completadas_hoy }};
+    const porcentaje = {{ porcentaje }};
+
+    // Barra de cumplimiento existente
+    const barraCumplimiento = document.getElementById('barra-cumplimiento');
+    if (barraCumplimiento) barraCumplimiento.style.width = porcentaje + '%';
+
+    // Calcular no realizadas y pendientes desde los registros
+    const registros = [
+        {% for r in registros_recientes %}
+            {{ r.realizada|yesno:"1,0,2" }},
+        {% endfor %}
+    ];
+
+    let noRealizadas = registros.filter(r => r === 0).length;
+    let pendientes = total - completadas - noRealizadas;
+    if (pendientes < 0) pendientes = 0;
+
+    const pctNoRealizadas = total > 0 ? Math.round((noRealizadas / total) * 100) : 0;
+    const pctPendientes = total > 0 ? Math.round((pendientes / total) * 100) : 0;
+
+    document.getElementById('no-realizadas').textContent = noRealizadas;
+    document.getElementById('pendientes').textContent = pendientes;
+    document.getElementById('barra-no-realizadas').style.width = pctNoRealizadas + '%';
+    document.getElementById('barra-pendientes').style.width = pctPendientes + '%';
 </script>
 </body>
 </html>
