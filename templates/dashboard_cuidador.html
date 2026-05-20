@@ -4,148 +4,130 @@
 <head>
 <meta charset="UTF-8">
 <title>Dashboard del Cuidador</title>
-
-
-<link rel="stylesheet" href="{% static 'css/dashboard_cuidador.css' %}">
-
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/global.css' %}">
 </head>
 
-<body>
+<body class="has-sidebar">
 
-<div class="container">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
+<aside class="sidebar">
     <h2>Cuidar-Tech</h2>
     <ul>
         <li class="active">Dashboard</li>
         <li><a href="/pacientes/">Gestión de Pacientes</a></li>
         <li><a href="/planes/">Planes de Cuidado</a></li>
         <li><a href="/actividades/">Actividades</a></li>
-        <li ><a href="/registros/hoy/">Registros</a></li>
+        <li><a href="/registros/hoy/">Registros</a></li>
         <li><a href="/notificaciones/">Notificaciones</a></li>
         <li><a href="/perfil/">Mi Perfil</a></li>
     </ul>
     <div class="logout">
-        <a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a>
+        <a href="/logout/">Cerrar sesión</a>
     </div>
 </aside>
 
-        
+<main class="main">
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main">
+    <h1>Bienvenido, {{ nombre }}</h1>
+    <p class="fecha">{{ hoy }}</p>
 
-        <h1>Dashboard del Cuidador</h1>
-        <p class="fecha">Domingo, 15 de Marzo de 2026</p>
+    <!-- TARJETAS -->
+    <div class="cards">
+        <div class="card">
+            <h3>Pacientes Activos</h3>
+            <span class="number">{{ pacientes_activos }}</span>
+        </div>
+        <div class="card">
+            <h3>Tareas Pendientes</h3>
+            <span class="number">{{ pendientes }}</span>
+        </div>
+        <div class="card">
+            <h3>Tareas Completadas</h3>
+            <span class="number">{{ completadas }}</span>
+        </div>
+        <div class="card">
+            <h3>Total Tareas Hoy</h3>
+            <span class="number">{{ total_tareas }}</span>
+        </div>
+    </div>
 
+    <!-- CARGA DEL CUIDADOR -->
+    <div class="panel" style="margin-bottom:24px;">
+        <h2>Indicador de Carga Laboral</h2>
+        <div style="display:flex; align-items:center; gap:40px; flex-wrap:wrap; padding:10px 0;">
 
-        <!-- TARJETAS SUPERIORES -->
-        <div class="cards">
-
-            <div class="card">
-                <h3>Pacientes Activos</h3>
-                <span class="number">3</span>
+            <div style="text-align:center;">
+                <div style="font-size:48px; font-weight:800; background:linear-gradient(135deg,#7ab6e8,#f39ab0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+                    {{ total_tareas }}
+                </div>
+                <div style="font-size:13px; color:#718096; font-weight:600;">actividades hoy</div>
             </div>
 
-            <div class="card">
-                <h3>Tareas Pendientes</h3>
-                <span class="number">4</span>
+            <div style="flex:1; min-width:200px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                    <span style="font-size:14px; font-weight:700; color:#2d3748;">Nivel de carga:
+                        <span style="background:linear-gradient(135deg,#7ab6e8,#f39ab0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+                            {{ nivel_carga }}
+                        </span>
+                    </span>
+                    <span style="font-size:13px; color:#718096;">{{ total_tareas }}/9 actividades</span>
+                </div>
+                <div style="background:#f0f0f0; border-radius:10px; height:12px;">
+                    <div style="width:{{ carga_porcentaje }}%; height:12px; border-radius:10px; background:linear-gradient(90deg,#7ab6e8,#f39ab0); transition:width 0.5s ease;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px; color:#718096;">
+                    <span>Baja (0-4)</span>
+                    <span>Media (5-8)</span>
+                    <span>Alta (9+)</span>
+                </div>
             </div>
 
-            <div class="card">
-                <h3>Tareas Completadas</h3>
-                <span class="number">8</span>
-            </div>
-
-            <div class="card">
-                <h3>Alertas</h3>
-                <span class="number">2</span>
+            <div style="text-align:center;">
+                <div style="font-size:32px; font-weight:800; background:linear-gradient(135deg,#7ab6e8,#f39ab0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+                    {{ total_actividades_asignadas }}
+                </div>
+                <div style="font-size:13px; color:#718096; font-weight:600;">total asignadas</div>
             </div>
 
         </div>
+    </div>
 
+    <!-- PANELES -->
+    <div class="content-panels">
 
-        <!-- CONTENIDO INFERIOR -->
-        <div class="content-panels">
-
-            <!-- ACTIVIDADES -->
-            <div class="panel">
-
-                <h2>Actividades Pendientes</h2>
-
-                <div class="actividad">
-                    <div>
-                        <p><strong>Administrar medicamento matutino</strong></p>
-                        <small>María González</small>
-                    </div>
-                    <span>09:00 AM</span>
+        <div class="panel">
+            <h2>Actividades Pendientes Hoy</h2>
+            {% for item in actividades_pendientes %}
+            <div class="actividad">
+                <div>
+                    <p><strong>{{ item.actividad.nombre_actividad }}</strong></p>
+                    <small>{{ item.actividad.id_plan.id_paciente.nombre }}</small>
                 </div>
-
-                <div class="actividad">
-                    <div>
-                        <p><strong>Ejercicios de movilidad</strong></p>
-                        <small>Juan Pérez</small>
-                    </div>
-                    <span>10:30 AM</span>
-                </div>
-
-                <div class="actividad">
-                    <div>
-                        <p><strong>Control de signos vitales</strong></p>
-                        <small>María González</small>
-                    </div>
-                    <span>12:00 PM</span>
-                </div>
-
-                <div class="actividad">
-                    <div>
-                        <p><strong>Almuerzo y nutrición</strong></p>
-                        <small>Ana Martínez</small>
-                    </div>
-                    <span>01:00 PM</span>
-                </div>
-
+                <span>{{ item.actividad.hora_programada }}</span>
             </div>
-
-
-            <!-- MEDICAMENTOS -->
-            <div class="panel">
-
-                <h2>Medicamentos Programados</h2>
-
-                <div class="med">
-                    <div>
-                        <p><strong>Aspirina 100mg</strong></p>
-                        <small>María González</small>
-                    </div>
-                    <span>09:00 AM</span>
-                </div>
-
-                <div class="med">
-                    <div>
-                        <p><strong>Metformina 850mg</strong></p>
-                        <small>Juan Pérez</small>
-                    </div>
-                    <span>08:00 AM</span>
-                </div>
-
-                <div class="med">
-                    <div>
-                        <p><strong>Enalapril 10mg</strong></p>
-                        <small>María González</small>
-                    </div>
-                    <span>02:00 PM</span>
-                </div>
-
-            </div>
-
+            {% empty %}
+            <p>No hay actividades pendientes por hoy </p>
+            {% endfor %}
         </div>
 
+        <div class="panel">
+            <h2>Actividades Completadas Hoy</h2>
+            {% for item in actividades_completadas %}
+            <div class="med">
+                <div>
+                    <p><strong>{{ item.nombre_actividad }}</strong></p>
+                    <small>{{ item.id_plan.id_paciente.nombre }}</small>
+                </div>
+                <span>{{ item.hora_programada }}</span>
+            </div>
+            {% empty %}
+            <p>Aún no hay actividades completadas hoy.</p>
+            {% endfor %}
+        </div>
 
-    </main>
+    </div>
 
-</div>
+</main>
 
 </body>
 </html>

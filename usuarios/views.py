@@ -203,12 +203,79 @@ def dashboard(request):
     id_rol = int(request.session.get('usuario_rol'))
 
     if id_rol == 1:
-        return render(request, 'dashboard_cuidador.html', {'nombre': nombre})
+        from datetime import date
+        usuario_id = request.session.get('usuario_id')
+        hoy = date.today()
+
+        pacientes_activos = Paciente.objects.filter(
+            id_cuidador_id=usuario_id,
+            estado=True
+        ).count()
+
+        actividades_hoy = ActividadCuidado.objects.filter(
+            id_plan__estado=True,
+            id_plan__id_paciente__estado=True,
+            id_plan__id_paciente__id_cuidador_id=usuario_id
+        ).select_related('id_plan__id_paciente')
+
+        total_tareas = actividades_hoy.count()
+
+        registros_completados = RegistroDiario.objects.filter(
+            id_actividad__in=actividades_hoy,
+            fecha=hoy,
+            realizada=True
+        ).values_list('id_actividad_id', flat=True)
+
+        completadas = len(registros_completados)
+        pendientes = total_tareas - completadas
+
+        actividades_pendientes = []
+        actividades_completadas = []
+        for actividad in actividades_hoy:
+            if actividad.id_actividad in registros_completados:
+                actividades_completadas.append(actividad)
+            else:
+                actividades_pendientes.append(actividad)
+
+        # ── CARGA DEL CUIDADOR ──
+        total_actividades_asignadas = ActividadCuidado.objects.filter(
+            id_plan__id_paciente__id_cuidador_id=usuario_id,
+            id_plan__estado=True,
+            id_plan__id_paciente__estado=True
+        ).count()
+
+        if total_tareas == 0:
+            nivel_carga = 'Sin actividades'
+            carga_porcentaje = 0
+        elif total_tareas <= 4:
+            nivel_carga = 'Baja'
+            carga_porcentaje = max(10, (total_tareas / 4) * 100)
+        elif total_tareas <= 8:
+            nivel_carga = 'Media'
+            carga_porcentaje = (total_tareas / 8) * 100
+        else:
+            nivel_carga = 'Alta'
+            carga_porcentaje = 100
+
+        return render(request, 'dashboard_cuidador.html', {
+            'nombre': nombre,
+            'hoy': hoy,
+            'pacientes_activos': pacientes_activos,
+            'total_tareas': total_tareas,
+            'completadas': completadas,
+            'pendientes': pendientes,
+            'actividades_pendientes': [{'actividad': a} for a in actividades_pendientes],
+            'actividades_completadas': actividades_completadas,
+            'total_actividades_asignadas': total_actividades_asignadas,
+            'nivel_carga': nivel_carga,
+            'carga_porcentaje': carga_porcentaje,
+        })
+
     elif id_rol == 2:
         return redirect('dashboard_familiar')
     else:
         return redirect('home')
-
+    
 
 # ── DASHBOARD FAMILIAR ─────────────────────────────────────────────────────────
 def dashboard_familiar(request):
