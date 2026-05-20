@@ -784,3 +784,63 @@ def marcar_leida(request, id_notificacion):
     notificacion.estado = 'leida'
     notificacion.save()
     return redirect('lista_notificaciones')
+
+# ── CONTACTO ──────────────────────────────────────────────────────────────────
+def contacto(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre', '').strip()
+        correo = request.POST.get('correo', '').strip()
+        mensaje = request.POST.get('mensaje', '').strip()
+
+        if not nombre or not correo or not mensaje:
+            return render(request, 'contacto.html', {
+                'error': 'Todos los campos son obligatorios.',
+                'nombre': nombre,
+                'correo': correo,
+                'mensaje': mensaje,
+            })
+
+        from django.core.mail import EmailMessage
+        correo_contacto = EmailMessage(
+            subject=f'Mensaje de contacto - {nombre}',
+            body=f'''
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f5f7fb;font-family:Arial,sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fb;padding:40px 0;">
+        <tr><td align="center">
+            <table width="500" cellpadding="0" cellspacing="0" style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                <tr><td style="background:linear-gradient(135deg,#7ab6e8,#f39ab0);padding:35px;text-align:center;">
+                    <h1 style="color:white;margin:0;font-size:24px;">CuidarTech</h1>
+                    <p style="color:rgba(255,255,255,0.85);margin:8px 0 0 0;font-size:13px;">Nuevo mensaje de contacto</p>
+                </td></tr>
+                <tr><td style="padding:35px;">
+                    <p style="color:#333;font-size:16px;margin:0 0 20px 0;">Has recibido un nuevo mensaje desde el formulario de contacto:</p>
+                    <div style="background:#f5f7fb;border-radius:10px;padding:20px;margin-bottom:20px;">
+                        <p style="color:#555;font-size:14px;margin:0 0 8px 0;"><strong>Nombre:</strong> {nombre}</p>
+                        <p style="color:#555;font-size:14px;margin:0 0 8px 0;"><strong>Correo:</strong> {correo}</p>
+                        <p style="color:#555;font-size:14px;margin:0;"><strong>Mensaje:</strong></p>
+                        <p style="color:#333;font-size:14px;margin:8px 0 0 0;line-height:1.6;">{mensaje}</p>
+                    </div>
+                </td></tr>
+                <tr><td style="background:#f9f9f9;padding:20px 35px;border-top:1px solid #eee;text-align:center;">
+                    <p style="color:#aaa;font-size:12px;margin:0;">© 2026 CuidarTech · Mensaje automático del formulario de contacto.</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body>
+</html>
+''',
+            from_email=None,
+            to=['sara.sanchez.5450@gmail.com']
+        )
+        correo_contacto.content_subtype = 'html'
+        correo_contacto.send(fail_silently=True)
+
+        return render(request, 'contacto.html', {
+            'exito': True
+        })
+
+    return render(request, 'contacto.html')

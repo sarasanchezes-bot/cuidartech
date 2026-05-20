@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacto - CuidarTech</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+body { margin:0; font-family:'Poppins',sans-serif; background:#f5f7fa; color:#2f3b4c; }
+
+.navbar { background:#f3f4f6; padding:15px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+.logo { font-weight:700; font-size:20px; background:linear-gradient(90deg,#5fa8d3,#f39ab0); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.nav-links a { margin-left:15px; text-decoration:none; color:#4a5568; font-size:14px; padding:8px 14px; border-radius:10px; }
+.nav-links a:hover { background:#f39ab0; color:white; }
+
+.hero { background:linear-gradient(90deg,#5fa8d3,#f39ab0); padding:80px 20px; text-align:center; color:white; }
+.hero h1 { font-size:42px; font-weight:800; margin:0 0 15px 0; }
+.hero p { font-size:18px; opacity:0.9; margin:0; }
+
+.container { max-width:600px; margin:60px auto; padding:0 20px; }
+
+.form-card { background:white; border-radius:20px; padding:40px; box-shadow:0 10px 25px rgba(0,0,0,0.05); }
+.form-card h2 { color:#333; margin:0 0 25px 0; font-size:22px; }
+
+.exito { background:#e8f5e9; border-radius:15px; padding:30px; text-align:center; }
+.exito h2 { color:#2e7d32; margin:0 0 10px 0; }
+.exito p { color:#555; margin:0 0 20px 0; }
+
+.error { color:#e74c3c; font-size:14px; margin-bottom:15px; }
+
+label { display:block; color:#555; font-size:14px; margin-bottom:6px; }
+input, textarea { width:100%; padding:12px; border:1px solid #ddd; border-radius:10px; font-size:14px; margin-bottom:20px; font-family:'Poppins',sans-serif; box-sizing:border-box; }
+input:focus, textarea:focus { outline:none; border-color:#7ab6ff; }
+textarea { height:120px; resize:vertical; }
+
+.btn-enviar { width:100%; padding:14px; border:none; border-radius:12px; background:linear-gradient(90deg,#5fa8d3,#f39ab0); color:white; font-size:16px; cursor:pointer; font-family:'Poppins',sans-serif; }
+.btn-enviar:hover { opacity:0.9; }
+.btn-volver { display:inline-block; margin-top:15px; padding:12px 25px; border-radius:12px; background:linear-gradient(90deg,#5fa8d3,#f39ab0); color:white; text-decoration:none; font-size:15px; }
+
+footer { text-align:center; padding:30px; font-size:14px; color:#6b7a90; }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">Cuidar-Tech</div>
+    <div class="nav-links">
+        <a href="/home/">Inicio</a>
+        <a href="/home/#nosotros">Nosotros</a>
+        <a href="/home/#funciones">Funciones</a>
+        <a href="/contacto/">Contacto</a>
+    </div>
+</div>
+
+<div class="hero">
+    <h1>Contáctanos</h1>
+    <p>Estamos aquí para ayudarte con cualquier pregunta sobre Cuidar-Tech</p>
+</div>
+
+<div class="container">
+    <div class="form-card">
+
+        {% if exito %}
+            <div class="exito">
+                <h2>Mensaje enviado</h2>
+                <p>Gracias por contactarnos. Responderemos a tu correo a la brevedad posible.</p>
+                <a href="/home/" class="btn-volver">Volver al inicio</a>
+            </div>
+        {% else %}
+            <h2>Envíanos un mensaje</h2>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label>Nombre completo *</label>
+                <input type="text" name="nombre" value="{{ nombre|default:'' }}" placeholder="Tu nombre" required>
+
+                <label>Correo electrónico *</label>
+                <input type="email" name="correo" value="{{ correo|default:'' }}" placeholder="correo@ejemplo.com" required>
+
+                <label>Mensaje *</label>
+                <textarea name="mensaje" placeholder="Escribe tu mensaje aquí..." required>{{ mensaje|default:'' }}</textarea>
+
+                <button type="submit" class="btn-enviar">Enviar mensaje</button>
+            </form>
+        {% endif %}
+
+    </div>
+</div>
+
+<footer>
+    © 2026 CuidarTech — Proyecto académico
+</footer>
+
+</body>
+</html>
