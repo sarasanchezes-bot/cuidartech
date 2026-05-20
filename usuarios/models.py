@@ -162,3 +162,29 @@ class FamiliarPaciente(models.Model):
 
     def __str__(self):
         return f"{self.id_familiar.nombre} -> {self.id_paciente.nombre}"
+    
+
+
+class HistorialModificacion(models.Model):
+
+    id_historial = models.AutoField(primary_key=True)
+    id_plan = models.ForeignKey(
+        PlanCuidado,
+        on_delete=models.CASCADE,
+        db_column='id_plan'
+    )
+    id_usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        db_column='id_usuario'
+    )
+    campo_modificado = models.CharField(max_length=100)
+    valor_anterior = models.TextField(null=True, blank=True)
+    valor_nuevo = models.TextField()
+    fecha_modificacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'historial_modificaciones'
+
+    def __str__(self):
+        return f"Cambio en plan {self.id_plan_id} por {self.id_usuario.nombre}"

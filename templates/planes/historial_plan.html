@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historial del Plan - CuidarTech</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+body { background:#f5f7fb; display:flex; }
+.sidebar { width:250px; height:100vh; background:white; padding:25px; box-shadow:2px 0 10px rgba(0,0,0,0.05); display:flex; flex-direction:column; position:fixed; }
+.sidebar h2 { margin-bottom:40px; color:#333; }
+.sidebar ul { list-style:none; }
+.sidebar ul li { padding:12px 15px; margin-bottom:10px; border-radius:10px; color:#555; }
+.sidebar ul li:hover { background:#f2f4f8; }
+.sidebar ul li.active { background:linear-gradient(90deg,#7ab6ff,#f3a6b7); color:white; }
+.sidebar ul li a { text-decoration:none; color:inherit; display:block; }
+.logout { margin-top:auto; }
+.main { margin-left:250px; flex:1; padding:35px; }
+
+.header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+.header h1 { color:#333; }
+.btn-volver { background:#f5f7fb; color:#555; border:1px solid #ddd; padding:10px 20px; border-radius:10px; text-decoration:none; font-size:13px; }
+
+.info-plan { background:white; border-radius:15px; padding:20px 25px; margin-bottom:25px; box-shadow:0 5px 15px rgba(0,0,0,0.05); }
+.info-plan p { color:#555; font-size:14px; }
+.info-plan strong { color:#333; }
+
+.tabla-container { background:white; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.05); overflow:hidden; }
+table { width:100%; border-collapse:collapse; }
+thead { background:#f5f7fb; }
+th { padding:15px 20px; text-align:left; color:#888; font-size:13px; text-transform:uppercase; }
+td { padding:15px 20px; border-top:1px solid #f0f0f0; color:#333; font-size:14px; }
+
+.campo-badge { background:#e3f2fd; color:#1565c0; padding:4px 12px; border-radius:20px; font-size:12px; }
+.sin-historial { text-align:center; padding:60px; color:#aaa; }
+
+.valor-box { background:#f5f7fb; border-radius:8px; padding:8px 12px; font-size:13px; color:#555; max-width:250px; word-break:break-word; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <h2>Cuidar-Tech</h2>
+    <ul>
+        <li><a href="/dashboard/">Dashboard</a></li>
+        <li><a href="/pacientes/">Gestión de Pacientes</a></li>
+        <li class="active"><a href="/planes/">Planes de Cuidado</a></li>
+        <li><a href="/actividades/">Actividades</a></li>
+        <li><a href="/registros/hoy/">Registro Diario</a></li>
+        <li><a href="/notificaciones/">Notificaciones</a></li>
+        <li><a href="/perfil/">Mi Perfil</a></li>
+    </ul>
+    <div class="logout"><a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a></div>
+</aside>
+
+<main class="main">
+    <div class="header">
+        <h1>Historial de modificaciones</h1>
+        <a href="/planes/{{ plan.id_plan }}/" class="btn-volver">← Volver al plan</a>
+    </div>
+
+    <div class="info-plan">
+        <p>Plan de cuidado de <strong>{{ plan.id_paciente.nombre }}</strong></p>
+        <p>Creado el <strong>{{ plan.fecha_creacion|date:"d/m/Y" }}</strong></p>
+    </div>
+
+    <div class="tabla-container">
+        {% if historial %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Campo</th>
+                    <th>Valor anterior</th>
+                    <th>Valor nuevo</th>
+                    <th>Modificado por</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in historial %}
+                <tr>
+                    <td>{{ registro.fecha_modificacion|date:"d/m/Y H:i" }}</td>
+                    <td><span class="campo-badge">{{ registro.campo_modificado }}</span></td>
+                    <td><div class="valor-box">{{ registro.valor_anterior|default:"—" }}</div></td>
+                    <td><div class="valor-box">{{ registro.valor_nuevo }}</div></td>
+                    <td>{{ registro.id_usuario.nombre }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="sin-historial">
+            <p>Este plan no tiene modificaciones registradas aún.</p>
+        </div>
+        {% endif %}
+    </div>
+</main>
+</body>
+</html>

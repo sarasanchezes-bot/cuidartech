@@ -67,6 +67,7 @@ body { background:#f5f7fb; display:flex; }
         </div>
         <div class="botones">
             <a href="/planes/{{ plan.id_plan }}/editar/" class="btn-editar">Editar</a>
+            <a href="/planes/{{ plan.id_plan }}/historial/" class="btn-volver">Ver historial</a>
             {% if plan.estado %}
             <form method="POST" action="/planes/{{ plan.id_plan }}/desactivar/" style="display:inline;">
                 {% csrf_token %}

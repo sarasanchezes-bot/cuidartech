@@ -57,4 +57,5 @@ urlpatterns = [
     #vista para que el cuidador pueda asignar familiares a sus pacientes
     path('pacientes/<int:id_paciente>/familiares/', views.gestionar_familiares, name='gestionar_familiares'),
     path('pacientes/<int:id_paciente>/familiares/quitar/<int:id_familiar>/', views.quitar_familiar, name='quitar_familiar'),
+    path('planes/<int:id_plan>/historial/', views.historial_plan, name='historial_plan'),
 ]

@@ -2,228 +2,151 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Familiar</title>
-
-    <!-- Google Fonts -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Familiar - CuidarTech</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        body { display:flex; background:#f5f7fb; }
 
-        body {
-            display: flex;
-            background: #f5f7fb;
-        }
+        .sidebar { width:260px; height:100vh; background:white; padding:20px; box-shadow:2px 0 10px rgba(0,0,0,0.05); position:fixed; display:flex; flex-direction:column; }
+        .logo { font-weight:700; font-size:20px; margin-bottom:40px; color:#333; }
+        .menu a { display:block; padding:12px; margin-bottom:10px; border-radius:10px; text-decoration:none; color:#555; }
+        .menu a.active { background:linear-gradient(90deg,#6aa9ff,#f7a1c4); color:white; }
+        .menu a:hover { background:#f2f4f8; }
+        .logout { margin-top:auto; }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 260px;
-            height: 100vh;
-            background: white;
-            padding: 20px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-        }
+        .main { margin-left:260px; flex:1; padding:30px; }
+        .title { font-size:28px; font-weight:700; color:#333; }
+        .date { color:gray; margin-bottom:20px; }
 
-        .logo {
-            font-weight: 700;
-            font-size: 20px;
-            margin-bottom: 40px;
-        }
+        .sin-pacientes { background:white; border-radius:15px; padding:50px; text-align:center; color:#aaa; box-shadow:0 5px 15px rgba(0,0,0,0.05); }
 
-        .menu a {
-            display: block;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: #555;
-        }
+        .hero { background:linear-gradient(90deg,#6aa9ff,#f7a1c4); border-radius:20px; padding:25px; color:white; margin-bottom:25px; }
+        .hero h2 { font-size:26px; }
+        .hero p { opacity:0.9; margin-top:5px; }
 
-        .menu a.active {
-            background: linear-gradient(90deg, #6aa9ff, #f7a1c4);
-            color: white;
-        }
+        .cards { display:flex; gap:20px; margin-bottom:25px; flex-wrap:wrap; }
+        .card { flex:1; min-width:150px; background:white; padding:20px; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.05); }
+        .card h3 { font-size:13px; color:gray; margin-bottom:10px; }
+        .card .value { font-size:26px; font-weight:700; color:#333; }
+        .green { color:#2ecc71; }
+        .blue { color:#3498db; }
+        .orange { color:#f39c12; }
 
-        .logout {
-            position: absolute;
-            bottom: 20px;
-            color: red;
-        }
+        .sections { display:flex; gap:20px; flex-wrap:wrap; }
+        .section { flex:1; min-width:280px; background:white; padding:20px; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.05); }
+        .section h2 { margin-bottom:15px; color:#333; font-size:16px; }
 
-        /* MAIN */
-        .main {
-            flex: 1;
-            padding: 30px;
-        }
+        .actividad-item { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f0f0f0; }
+        .actividad-item:last-child { border-bottom:none; }
+        .actividad-item p { color:#333; font-size:14px; }
+        .actividad-item small { color:#888; font-size:12px; }
 
-        .title {
-            font-size: 32px;
-            font-weight: 700;
-        }
+        .estado-realizada { background:#e8f5e9; color:#2e7d32; padding:3px 10px; border-radius:20px; font-size:11px; }
+        .estado-no-realizada { background:#fce4e4; color:#c62828; padding:3px 10px; border-radius:20px; font-size:11px; }
+        .estado-pendiente { background:#fff8e1; color:#f57f17; padding:3px 10px; border-radius:20px; font-size:11px; }
 
-        .date {
-            color: gray;
-            margin-bottom: 20px;
-        }
+        .alerta-item { padding:10px 0; border-bottom:1px solid #f0f0f0; font-size:14px; color:#555; }
+        .alerta-item:last-child { border-bottom:none; }
 
-        /* HERO */
-        .hero {
-            background: linear-gradient(90deg, #6aa9ff, #f7a1c4);
-            border-radius: 20px;
-            padding: 25px;
-            color: white;
-            margin-bottom: 25px;
-        }
+        .barra-container { background:#f0f0f0; border-radius:10px; height:10px; margin-top:10px; }
+        .barra { height:10px; border-radius:10px; background:linear-gradient(90deg,#6aa9ff,#f7a1c4); }
 
-        .hero h2 {
-            font-size: 28px;
-        }
-
-        .hero p {
-            opacity: 0.9;
-        }
-
-        .hero-boxes {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .hero-box {
-            flex: 1;
-            height: 60px;
-            background: rgba(255,255,255,0.6);
-            border-radius: 15px;
-        }
-
-        /* CARDS */
-        .cards {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .card {
-            flex: 1;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .card h3 {
-            font-size: 14px;
-            color: gray;
-        }
-
-        .card .value {
-            font-size: 28px;
-            font-weight: 700;
-            margin-top: 10px;
-        }
-
-        .green { color: #2ecc71; }
-        .blue { color: #3498db; }
-
-        /* SECTIONS */
-        .sections {
-            display: flex;
-            gap: 20px;
-        }
-
-        .section {
-            flex: 1;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .section h2 {
-            margin-bottom: 15px;
-        }
-
+        .sin-datos { color:#aaa; font-size:14px; text-align:center; padding:20px 0; }
     </style>
 </head>
-
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">💙 Cuidar-Tech</div>
-
     <div class="menu">
-        <a class="active">Dashboard Familiar</a>
-        <a>Monitoreo del Paciente</a>
-        <a>Análisis y Reportes</a>
-        <a>Mi Perfil</a>
+        <a href="/dashboard/familiar/" class="active">Dashboard Familiar</a>
+        <a href="/notificaciones/">Notificaciones</a>
+        <a href="/perfil/">Mi Perfil</a>
     </div>
-
-    <div class="logout">Cerrar sesión</div>
+    <div class="logout"><a href="/logout/" style="color:red;text-decoration:none;">Cerrar sesión</a></div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
-
     <div class="title">Dashboard Familiar</div>
-    <div class="date">Lunes, 16 de Marzo de 2026</div>
+    <div class="date">{{ hoy }}</div>
 
-    <!-- HERO -->
-    <div class="hero">
-        <h2>{{ paciente.nombre|default:"María González" }}</h2>
-        <p>78 años • Paciente bajo supervisión</p>
-
-        <div class="hero-boxes">
-            <div class="hero-box"></div>
-            <div class="hero-box"></div>
-            <div class="hero-box"></div>
+    {% if not paciente_principal %}
+        <div class="sin-pacientes">
+            <p>No tienes pacientes asignados aún.</p>
+            <p style="margin-top:10px;font-size:14px;">Comunícate con el cuidador para que te asigne un paciente.</p>
         </div>
-    </div>
+    {% else %}
 
-    <!-- CARDS -->
-    <div class="cards">
-        <div class="card">
-            <h3>Estado General</h3>
-            <div class="value green">Estable</div>
+        <div class="hero">
+            <h2>{{ paciente_principal.nombre }}</h2>
+            <p>Paciente bajo supervisión</p>
+            <p style="margin-top:10px;font-size:13px;opacity:0.85;">Diagnóstico: {{ paciente_principal.diagnostico|default:"No registrado" }}</p>
         </div>
 
-        <div class="card">
-            <h3>Actividades Hoy</h3>
-            <div class="value">8</div>
+        <div class="cards">
+            <div class="card">
+                <h3>Actividades Hoy</h3>
+                <div class="value">{{ total_actividades_hoy }}</div>
+            </div>
+            <div class="card">
+                <h3>Completadas</h3>
+                <div class="value green">{{ completadas_hoy }}</div>
+            </div>
+            <div class="card">
+                <h3>Cumplimiento</h3>
+                <div class="value blue">{{ porcentaje }}%</div>
+                <div class="barra-container">
+                    <div class="barra" style="width:{{ porcentaje }}%;"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Pendientes</h3>
+                <div class="value orange">{{ total_actividades_hoy|add:"-"|add:completadas_hoy }}</div>
+            </div>
         </div>
 
-        <div class="card">
-            <h3>Completadas</h3>
-            <div class="value green">5</div>
+        <div class="sections">
+            <div class="section">
+                <h2>Actividades de Hoy</h2>
+                {% if registros_recientes %}
+                    {% for registro in registros_recientes %}
+                    <div class="actividad-item">
+                        <div>
+                            <p>{{ registro.id_actividad.nombre_actividad }}</p>
+                            <small>{{ registro.hora_registro|default:"Sin hora" }}</small>
+                        </div>
+                        {% if registro.realizada == True %}
+                            <span class="estado-realizada">Realizada</span>
+                        {% elif registro.realizada == False %}
+                            <span class="estado-no-realizada">No realizada</span>
+                        {% else %}
+                            <span class="estado-pendiente">Pendiente</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="sin-datos">No hay registros aún hoy.</p>
+                {% endif %}
+            </div>
+
+            <div class="section">
+                <h2>Alertas Recientes</h2>
+                {% if notificaciones_recientes %}
+                    {% for noti in notificaciones_recientes %}
+                    <div class="alerta-item">
+                        {{ noti.mensaje }}
+                        <br><small style="color:#aaa;">{{ noti.fecha_envio|date:"d/m/Y H:i" }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="sin-datos">No hay alertas recientes.</p>
+                {% endif %}
+            </div>
         </div>
 
-        <div class="card">
-            <h3>Cumplimiento</h3>
-            <div class="value blue">92%</div>
-        </div>
-    </div>
-
-    <!-- SECTIONS -->
-    <div class="sections">
-        <div class="section">
-            <h2>Actividades Recientes</h2>
-            <p>• Medicación administrada</p>
-            <p>• Control de signos vitales</p>
-            <p>• Observación del paciente</p>
-        </div>
-
-        <div class="section">
-            <h2>Alertas Recientes</h2>
-            <p>• Presión alta detectada</p>
-            <p>• Medicamento pendiente</p>
-        </div>
-    </div>
-
+    {% endif %}
 </div>
 
 </body>
