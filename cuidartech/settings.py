@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1234567890'
 
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -57,7 +57,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cuidar_tech',
         'USER': 'postgres',
-        'PASSWORD': '1234',
+        'PASSWORD': '2706',
         'HOST': 'localhost',
         'PORT': '5432',
     }
