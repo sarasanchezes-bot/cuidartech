@@ -57,7 +57,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cuidar_tech',
         'USER': 'postgres',
-        'PASSWORD': '2706',
+        'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '5432',
     }
