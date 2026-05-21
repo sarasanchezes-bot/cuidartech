@@ -7,7 +7,6 @@ class UsuariosConfig(AppConfig):
     def ready(self):
         import sys
         if 'migrate' not in sys.argv and 'makemigrations' not in sys.argv:
-            database_url = os.environ.get('DATABASE_URL')
-            if not database_url:
+            if os.environ.get('DISABLE_SCHEDULER') != 'true':
                 from . import scheduler
                 scheduler.start()
